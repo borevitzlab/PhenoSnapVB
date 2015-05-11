@@ -1,0 +1,50 @@
+C:\Users\Tim Brown\AppData\Local\Temporary Projects\LeafScan\bin\Debug\LeafScan.exe.config
+C:\Users\Tim Brown\AppData\Local\Temporary Projects\LeafScan\bin\Debug\LeafScan.exe
+C:\Users\Tim Brown\AppData\Local\Temporary Projects\LeafScan\bin\Debug\LeafScan.pdb
+C:\Users\Tim Brown\AppData\Local\Temporary Projects\LeafScan\bin\Debug\LeafScan.xml
+C:\Users\Tim Brown\AppData\Local\Temporary Projects\LeafScan\obj\Debug\LeafScan.Form1.resources
+C:\Users\Tim Brown\AppData\Local\Temporary Projects\LeafScan\obj\Debug\LeafScan.Resources.resources
+C:\Users\Tim Brown\AppData\Local\Temporary Projects\LeafScan\obj\Debug\LeafScan.vbproj.GenerateResource.Cache
+C:\Users\Tim Brown\AppData\Local\Temporary Projects\LeafScan\obj\Debug\LeafScan.exe
+C:\Users\Tim Brown\AppData\Local\Temporary Projects\LeafScan\obj\Debug\LeafScan.xml
+C:\Users\Tim Brown\AppData\Local\Temporary Projects\LeafScan\obj\Debug\LeafScan.pdb
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\bin\Debug\LeafScan.exe.config
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\obj\Debug\LeafScan.exe
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\obj\Debug\LeafScan.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\obj\Debug\LeafScan.pdb
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\bin\Debug\LeafScan.exe
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\bin\Debug\LeafScan.pdb
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\bin\Debug\LeafScan.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\obj\Debug\LeafScan.Form1.resources
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\obj\Debug\LeafScan.Resources.resources
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\obj\Debug\LeafScan.vbproj.GenerateResource.Cache
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\bin\Debug\Emgu.CV.dll
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\bin\Debug\Emgu.CV.UI.dll
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\bin\Debug\Emgu.Util.dll
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\bin\Debug\ZedGraph.dll
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\bin\Debug\Emgu.CV.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\bin\Debug\Emgu.CV.UI.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\bin\Debug\Emgu.Util.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScan\LeafScan\obj\Debug\LeafScan.vbprojResolveAssemblyReference.cache
+C:\a_data\TimeStreams\Borevitz\_data\leafscan\LeafScanVB\LeafScan\bin\Debug\LeafScan.exe.config
+C:\a_data\TimeStreams\Borevitz\_data\leafscan\LeafScanVB\LeafScan\obj\Debug\LeafScan.exe
+C:\a_data\TimeStreams\Borevitz\_data\leafscan\LeafScanVB\LeafScan\obj\Debug\LeafScan.xml
+C:\a_data\TimeStreams\Borevitz\_data\leafscan\LeafScanVB\LeafScan\obj\Debug\LeafScan.pdb
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\obj\Debug\LeafScan.vbprojResolveAssemblyReference.cache
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\obj\Debug\LeafScan.Resources.resources
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\obj\Debug\LeafScan.vbproj.GenerateResource.Cache
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\bin\Debug\LeafScan.exe.config
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\bin\Debug\LeafScan.exe
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\bin\Debug\LeafScan.pdb
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\bin\Debug\LeafScan.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\bin\Debug\Emgu.CV.dll
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\bin\Debug\Emgu.CV.UI.dll
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\bin\Debug\Emgu.Util.dll
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\bin\Debug\ZedGraph.dll
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\bin\Debug\Emgu.CV.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\bin\Debug\Emgu.CV.UI.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\bin\Debug\Emgu.Util.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\obj\Debug\LeafScan.exe
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\obj\Debug\LeafScan.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\obj\Debug\LeafScan.pdb
+C:\Users\Tim Brown\Documents\ANU\Projects\LeafSize\LeafScanVB\LeafScan\obj\Debug\LeafScan.frmPhenoSnap.resources

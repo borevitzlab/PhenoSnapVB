@@ -1,0 +1,51 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+PhenoSnap
+</name>
+</assembly>
+<members>
+<member name="M:PhenoSnap.Helpers.GetDriveType(System.String)">
+	<summary>
+ Returns drive type
+ </summary>
+	<param name="driveLetter">Format: "C:\"</param>
+	<returns>Either text of drive type or NULL if it fails</returns>
+	<remarks></remarks>
+</member><member name="P:PhenoSnap.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:PhenoSnap.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="P:PhenoSnap.My.Resources.Resources.barcode">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="T:PhenoSnap.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member><member name="M:PhenoSnap.frmPhenoSnap.CaptureImage(System.String,System.String,System.String,System.Windows.Forms.PictureBox,System.Int32)">
+	<summary>
+	</summary>
+	<param name="imName"></param>
+	<param name="temppath"></param>
+	<param name="URL"></param>
+	<param name="picbox"></param>
+	<param name="capType">Passes a consts of either IP or WEBCAM to determine how capture is handeled</param>
+	<returns></returns>
+	<remarks></remarks>
+</member><member name="M:PhenoSnap.frmPhenoSnap.GetDPI">
+	<summary>
+ The screen is sizex in pixels but we need to print in real lengths so we scale the 
+ box sizes to match the desired size in inches for the print output
+ </summary>
+	<remarks></remarks>
+</member>
+</members>
+</doc>
