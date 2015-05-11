@@ -69,5 +69,24 @@ Namespace My.Resources
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        '''</summary>
+        Friend ReadOnly Property Beep_Ping_SoundBible_com_217088958() As System.IO.UnmanagedMemoryStream
+            Get
+                Return ResourceManager.GetStream("Beep_Ping_SoundBible_com_217088958", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        '''</summary>
+        Friend ReadOnly Property Icons8_Windows_8_Plants_Leaf() As System.Drawing.Icon
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Icons8_Windows_8_Plants_Leaf", resourceCulture)
+                Return CType(obj,System.Drawing.Icon)
+            End Get
+        End Property
     End Module
 End Namespace

@@ -96,6 +96,24 @@ Public Class frmPhenoSnap
         Public plantID As String
         Public expID As String
         Public user As String
+        Public leafID As String
+
+        Public Sub Clear()
+            accession = String.Empty
+            accessionID = String.Empty
+            plantName = String.Empty
+            plantNumber = String.Empty
+            treatment = String.Empty
+            cabinet = String.Empty
+            potLoc = String.Empty
+            potNum = String.Empty
+            plantPos = String.Empty
+            plantID = String.Empty
+            expID = String.Empty
+            user = String.Empty
+            leafID = String.Empty
+        End Sub
+
     End Structure
 
     Dim curPlant As PlantInfo
@@ -198,6 +216,11 @@ Public Class frmPhenoSnap
     Dim bCamAutoFocus As Boolean = True 'Is camera autofocus or manual
     ' AspectRatios
     Dim camAspectRatio As Double
+
+    Dim bBeepOnCapture As Boolean = False
+
+    Dim gSetSizeTimer As Integer = 0 ' For auto setting the webcam image size, we need to run the "set size" timer on form load until the webcam is actually available. This count how long it has been run for so we can cancel the timer if the webcam takes to long to load
+
     Private Const FOURTHREE = 4 / 3
     Private Const THREETWO = (3 / 2)
     Private Const ONEONE = 1
@@ -244,16 +267,10 @@ Public Class frmPhenoSnap
         ImportData()
 
         formLoaded = True
-        Try
-            '  Dim camIndexNum = cmbVideoSource.FindStringExact(gSelectedWebCamName)
-            '  If camIndexNum > 0 Then cmbVideoSource.SelectedIndex = camIndexNum
 
-            '  Dim vidSizeIndex = cmbVideoModes.FindStringExact(gWebCamVideoSize)
-            '  If camIndexNum > 0 Then cmbVideoModes.SelectedIndex = vidSizeIndex
+        tmrSetVideoSize.Enabled = True
 
-        Catch ex As Exception
 
-        End Try
 
     End Sub
     Private Sub Form1_Closing(sender As Object, e As EventArgs) Handles MyBase.FormClosing
@@ -261,13 +278,16 @@ Public Class frmPhenoSnap
         saveConfig(appDataPath)
     End Sub
     Private Sub updateSettings()
-        If Not (formLoaded) Then Exit Sub
+        '   If Not (formLoaded) Then Exit Sub
+        bBeepOnCapture = chkBeepOnCapture.Checked
+
         rootSavePath = IO.Path.Combine(txtFileSavePath.Text & txtExpID.Text)
-        curPlant.plantID = txtBarcodeValue.Text.TrimStart("0"c) 'Trim leading zeros so the search matches if the barcode has extra zeros
 
         lblCurBarcode.Text = curPlant.plantID
 
         config.secondCam = chkUseCam2.Checked
+
+        Dim imtype As String = My.Settings.ICType
 
 
         curPlant.expID = txtExpID.Text
@@ -275,9 +295,9 @@ Public Class frmPhenoSnap
 
         rootSavePath = IO.Path.Combine(txtFileSavePath.Text, txtExpID.Text & "-PhenotypeData\" & Now.Year & "_" & sPad(Now.Month, 2) & "_" & sPad(Now.Day, 2))
         rootTempSavePath = IO.Path.Combine(rootSavePath, "temp")
-        Dim imtype As String = My.Settings.ICType
         rootTempFullSavePath(1) = IO.Path.Combine(rootTempSavePath, "temp1." & imtype)
         rootTempFullSavePath(2) = IO.Path.Combine(rootTempSavePath, "temp2." & imtype)
+        'FULSAVEPATH now gets set in "GetImagePathName"
 
         ''Need to create root temp file path b/c webcam save fails if path doesn't exist:
         Try
@@ -295,26 +315,13 @@ Public Class frmPhenoSnap
         '' For BVZ0022 pelli leafsnap:
         ''        imName01 = curPlant.expID & "_" & sPad(curPlant.cabinet, 2) & "_" & curPlant.potLoc & "_" & curPlant.plantID & ".jpg"
 
-        ''For BVZ0038 - Wheat trial dual camera:
-        imName01 = curPlant.expID & "-" & curPlant.plantID & "-" & curPlant.accession & "-" & curPlant.treatment & "-TOP"
-        imName02 = curPlant.expID & "-" & curPlant.plantID & "-" & curPlant.accession & "-" & curPlant.treatment & "-SIDE"
-        'EXPD-PlantID-Acess-Condition-PotNum-TopORSide
 
-        ''For BVZ0047 - Euc LeafScan with webcam:
-        imName01 = curPlant.expID & "-" & curPlant.plantNumber & "-" & curPlant.accessionID
-        '        imName02 = curPlant.expID & "-" & curPlant.plantID & "-" & curPlant.accession & "-" & curPlant.treatment & "-SIDE"
-        'EXPD-PlantID-Acess-Condition-PotNum-TopORSide
-
-        ''For BVZ0042 - PIP Brachy scan:
-        imName01 = curPlant.expID & "-" & curPlant.plantName
 
 
         ''Old way with just filename:
         '        fullSavePath(1) = IO.Path.Combine(rootSavePath, imName01)
         '       fullSavePath(2) = IO.Path.Combine(rootSavePath, imName02)
-        'New way that gives TimeStream file name (but we just use one folder per day, not the full timestream folders)
-        fullSavePath(1) = IO.Path.Combine(rootSavePath, GetFilenameFromPath(GetFullFilePath(rootTempSavePath, Date.Now, imName01, 60)))
-        fullSavePath(2) = IO.Path.Combine(rootSavePath, GetFilenameFromPath(GetFullFilePath(rootTempSavePath, Date.Now, imName02, 60)))
+
 
         config.secondCam = chkUseCam2.Checked
         config.camURL1 = txtURL1.Text
@@ -331,6 +338,40 @@ Public Class frmPhenoSnap
 
         GoToScanBox()
     End Sub
+    Private Function GetImageNamePath(expID) As String
+
+        Select Case expID
+            Case "BVZ0038"
+                ''For BVZ0038 - Wheat trial dual camera:
+                imName01 = curPlant.expID & "-" & curPlant.plantID & "-" & curPlant.accession & "-" & curPlant.treatment & "-TOP"
+                imName02 = curPlant.expID & "-" & curPlant.plantID & "-" & curPlant.accession & "-" & curPlant.treatment & "-SIDE"
+                'EXPD-PlantID-Acess-Condition-PotNum-TopORSide
+
+            Case "BVZ0047"
+
+                ''For BVZ0047 - Euc LeafScan with webcam:
+                ' imName01 = curPlant.expID & "-" & "P" & curPlant.plantNumber & "-" & "L" & sPad(curPlant.leafID, 3) & "-" & curPlant.accessionID
+                imName01 = curPlant.expID & "-" & curPlant.plantID & "-" & curPlant.accessionID
+                'EXPD-PlantID-Acess-Condition-PotNum-TopORSide
+
+            Case "BVZ0042"
+
+                ''For BVZ0042 - PIP Brachy scan:
+                imName01 = curPlant.expID & "-" & curPlant.plantName
+            Case Else
+                Beep()
+                MsgBox("Output filename not yet configured for current experiment ID")
+                Return "FAIL-OutputNotConfiguredForCurrentExpID"
+        End Select
+
+        'Create save path for image (temp path gets set in "update settings"
+        'New way that gives TimeStream file name (but we just use one folder per day, not the full timestream folders)
+        fullSavePath(1) = IO.Path.Combine(rootSavePath, GetFilenameFromPath(GetFullFilePath(rootTempSavePath, Date.Now, imName01, 60)))
+        fullSavePath(2) = IO.Path.Combine(rootSavePath, GetFilenameFromPath(GetFullFilePath(rootTempSavePath, Date.Now, imName02, 60)))
+
+
+
+    End Function
     Private Sub setCamType()
         Select Case VB.Left(cmbCam1CamType.Text, 3) 'Grab the first 3 letters to make it easer 
             Case "URL"
@@ -354,7 +395,7 @@ Public Class frmPhenoSnap
 
         labelType = SEED
 
-        If GetLabelData() = 0 Then
+        If LoadCurrentPlantInfo() = 0 Then
             'Quit if we can't get label
             txtBarcodeValue.Text = ""
             Return
@@ -367,14 +408,23 @@ Public Class frmPhenoSnap
         End If
 
         Dim result
+
+        'Get filename
+        GetImageNamePath(config.expID)
+
+        'CAPTURE THE IMAGE
         If Not (config.secondCam) Then
             result = CaptureImage(imName01, rootTempFullSavePath(1), config.camURL1, pctCam1LastImage, camType)
         Else
+            Beep()
+            MsgBox("NO SECOND CAM CAPTURE CONFIGURED")
             '[TB NOTE] This requires that both images be captured successfully. Should be written for better error reporting
             ''   result = CaptureImage(imName01, rootTempFullSavePath(1), config.camURL1, pctImage1)
             ''   If result = 1 Then result = CaptureImage(imName02, rootTempFullSavePath(2), config.camURL2, pctImage2)
 
         End If
+
+        'SAVE THE IMAGE
         If result = 1 Then
             Try
                 pctCam1LastImage.Image.Save(fullSavePath(1))
@@ -389,6 +439,7 @@ Public Class frmPhenoSnap
                 If chkAutoPrint.Checked = True Then
                     PrintLabel()
                 End If
+                txtOutput.Clear()
             Catch ex As Exception
                 Beep()
                 txtOutput.Text = "Error saving image. " & vbCrLf & ex.Message
@@ -403,8 +454,13 @@ Public Class frmPhenoSnap
 
     End Sub
 
-    Private Function GetLabelData()
+    Private Function LoadCurrentPlantInfo()
         '        [TB] Need to auto detect plant ID column (see the cam tracker code for how to detect this when loading the csv)
+        'Clear current data
+        curPlant.Clear()
+
+        curPlant.plantID = txtBarcodeValue.Text.TrimStart("0"c) 'Trim leading zeros so the search matches if the barcode has extra zeros
+
         Dim plantIDCol As Integer = GetIndexOf("PlantID", DataGridView1)
 
         Dim plantRow As DataGridViewRow
@@ -424,21 +480,32 @@ Public Class frmPhenoSnap
         End Try
 
         If Not IsNothing(plantRow) Then
+            Try
 
-            curPlant.plantID = plantRow.Cells(GetIndexOf("PlantID", DataGridView1)).Value.ToString()
-            '          curPlant.plantName = plantRow.Cells(GetIndexOf("PlantID", DataGridView1)).Value.ToString()
-            curPlant.accessionID = plantRow.Cells(GetIndexOf("AccessionID", DataGridView1)).Value.ToString()
-            curPlant.plantNumber = sPad(plantRow.Cells(GetIndexOf("PlantNumber", DataGridView1)).Value.ToString(), 3)
-            curPlant.plantName = plantRow.Cells(GetIndexOf("PlantName", DataGridView1)).Value.ToString()
-            curPlant.plantName = VB.Replace(curPlant.plantName, "_", "-")
-            '            curPlant.accession = plantRow.Cells(GetIndexOf("Accession", DataGridView1)).Value.ToString()
-            '           curPlant.accession = plantRow.Cells(GetIndexOf("Accession", DataGridView1)).Value.ToString()
-            'curPlant.expID = plantRow.Cells(3).Value.ToString()
-            'curPlant.user = plantRow.Cells(4).Value.ToString()
-            'curPlant.treatment = plantRow.Cells(5).Value.ToString()
-            'curPlant.potNum = plantRow.Cells(6).Value.ToString()
-            Return 1
+                curPlant.plantID = plantRow.Cells(GetIndexOf("PlantID", DataGridView1)).Value.ToString()
+                curPlant.expID = txtExpID.Text
+                curPlant.user = txtUserName.Text
+                curPlant.leafID = plantRow.Cells(GetIndexOf("LeafID", DataGridView1)).Value.ToString()
+                '          curPlant.plantName = plantRow.Cells(GetIndexOf("PlantID", DataGridView1)).Value.ToString()
+                curPlant.accessionID = plantRow.Cells(GetIndexOf("AccessionID", DataGridView1)).Value.ToString()
+                curPlant.plantNumber = sPad(plantRow.Cells(GetIndexOf("PlantNumber", DataGridView1)).Value.ToString(), 3)
+                curPlant.plantName = plantRow.Cells(GetIndexOf("PlantName", DataGridView1)).Value.ToString()
+                curPlant.plantName = VB.Replace(curPlant.plantName, "_", "-")
+                '            curPlant.accession = plantRow.Cells(GetIndexOf("Accession", DataGridView1)).Value.ToString()
+                '           curPlant.accession = plantRow.Cells(GetIndexOf("Accession", DataGridView1)).Value.ToString()
+                'curPlant.expID = plantRow.Cells(3).Value.ToString()
+                'curPlant.user = plantRow.Cells(4).Value.ToString()
+                'curPlant.treatment = plantRow.Cells(5).Value.ToString()
+                'curPlant.potNum = plantRow.Cells(6).Value.ToString()
+                Return 1
+            Catch ex As Exception
+                txtOutput.Text = ex.Message
+                Beep()
+                Return 0
+            End Try
+
         Else
+
             Beep()
             Beep()
 
@@ -485,7 +552,8 @@ Public Class frmPhenoSnap
     ''' <returns></returns>
     ''' <remarks></remarks>
     Private Function CaptureImage(imName As String, temppath As String, URL As String, picbox As System.Windows.Forms.PictureBox, capType As Integer) As Integer
-        Beep()
+
+
         Application.DoEvents()
 
         Try
@@ -502,7 +570,6 @@ Public Class frmPhenoSnap
         End Try
 
         Application.DoEvents()
-        Beep()
         Me.Update()
         'Clear pictbox and delete temp image
 
@@ -544,13 +611,18 @@ Public Class frmPhenoSnap
             End Select
             'txtOutput.Text = "Image1 downloaded"
 
+
+            If bBeepOnCapture Then
+                Beep()
+                ''    My.Computer.Audio.Play(My.Resources.Beep_Ping_SoundBible_com_217088958, AudioPlayMode.Background)
+            End If
+
             Return 1
         Catch ex As Exception
             txtOutput.Text = ex.Message
             Return 0
 
         End Try
-
 
 
     End Function
@@ -763,10 +835,11 @@ Public Class frmPhenoSnap
                     "is not valid and will be skipped.")
                 End Try
             End While
+
             TextFileReader.Dispose()
 
             DataGridView1.DataSource = TextFileTable
-
+            DataGridView1.AutoResizeColumns()
         Catch ex As Exception
             Beep()
             txtOutput.Text = "Error loading db file from file path:" & vbCrLf & config.dbPath & vbCrLf & "Error message: " & ex.Message
@@ -821,7 +894,7 @@ Public Class frmPhenoSnap
 
                 ' currentData = Split(MyReader.ReadLine, "= ")
                 currentData = MyReader.ReadFields()
-                Beep()
+                '      Beep()
                 Select Case currentData(0)
                     Case "expID"
                         txtExpID.Text = currentData(1)
@@ -857,6 +930,9 @@ Public Class frmPhenoSnap
                         gCamFocus = currentData(1)
                     Case "bCamAutoFocus"
                         bCamAutoFocus = currentData(1)
+                    Case "bBeepOnCapture"
+                        chkBeepOnCapture.Checked = currentData(1)
+
                 End Select
 
                 updateSettings()
@@ -906,6 +982,8 @@ Public Class frmPhenoSnap
             A.writeline("cmbVideoSize =" & cmbVideoModes.Text) 'We store the text rather than the index which makes it easier to find the camera if it exists
             A.writeline("gCamFocus =" & gCamFocus) 'Current camera focus setting
             A.writeline("bCamAutoFocus =" & bCamAutoFocus) 'Current camera focus setting
+            A.writeline("bBeepOnCapture =" & bBeepOnCapture) 'does program beep before and after capture (annoying if capture is instant, needed if capture is delayed')
+
             A.Close()
         Catch ex As Exception
             txtOutput.Text = ex.Message
@@ -1062,14 +1140,18 @@ Public Class frmPhenoSnap
 
     'What we do when barcode has been entered and ENTER is hit:
     Private Sub txtPlantID_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles txtBarcodeValue.KeyDown
+        
         If e.KeyCode = Keys.Enter Then
+            e.Handled = True
+            e.SuppressKeyPress = True
+            My.Application.DoEvents()
             txtOutput.Text = "Downloading image"
             txtOutput.Update()
             lblProgress.BackColor = Color.Red
             lblLastImageName.Text = ""
             '    lblLastPlantScanned.Text = ""
             lblProgress.Text = "Capturing"
-            My.Application.DoEvents()
+            ' 
             DoProcess() 'Do the actual capture and save of images
             lblProgress.BackColor = Color.Green
             lblProgress.Text = "Ready"
@@ -1194,34 +1276,34 @@ Public Class frmPhenoSnap
 
     ''Declare Function capCreateCaptureWindowA Lib "avicap32.dll" (ByVal lpszWindowName As String, ByVal dwStyle As Integer, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Short, ByVal hWnd As Integer, ByVal nID As Integer) As Integer
 
-    Declare Function capGetDriverDescriptionA Lib "avicap32.dll" (ByVal wDriverIndex As Short, ByVal lpszName As String, ByVal cbName As Integer, ByVal lpszVer As String, ByVal cbVer As Integer) As Boolean
+    ''Declare Function capGetDriverDescriptionA Lib "avicap32.dll" (ByVal wDriverIndex As Short, ByVal lpszName As String, ByVal cbName As Integer, ByVal lpszVer As String, ByVal cbVer As Integer) As Boolean
 
-    Declare Function capCreateCaptureWindowA Lib "avicap32.dll" (ByVal lpszWindowName As String, ByVal dwStyle As Integer, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Short, ByVal hWnd As Integer, ByVal nID As Integer) As Integer
+    ''Declare Function capCreateCaptureWindowA Lib "avicap32.dll" (ByVal lpszWindowName As String, ByVal dwStyle As Integer, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Short, ByVal hWnd As Integer, ByVal nID As Integer) As Integer
 
-    '''[TIM TEMP] Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Integer, ByVal Msg As Integer, ByVal wParam As Integer, <MarshalAs(UnmanagedType.AsAny)> ByVal lParam As Object) As Integer
+    '' '''[TIM TEMP] Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Integer, ByVal Msg As Integer, ByVal wParam As Integer, <MarshalAs(UnmanagedType.AsAny)> ByVal lParam As Object) As Integer
 
-    Declare Function SetWindowPos Lib "user32" Alias "SetWindowPos" (ByVal hwnd As Integer, ByVal hWndInsertAfter As Integer, ByVal x As Integer, ByVal y As Integer, ByVal cx As Integer, ByVal cy As Integer, ByVal wFlags As Integer) As Integer
+    ''Declare Function SetWindowPos Lib "user32" Alias "SetWindowPos" (ByVal hwnd As Integer, ByVal hWndInsertAfter As Integer, ByVal x As Integer, ByVal y As Integer, ByVal cx As Integer, ByVal cy As Integer, ByVal wFlags As Integer) As Integer
 
-    Declare Function DestroyWindow Lib "user32" (ByVal hndw As Integer) As Boolean
-
-
-
-    Private DriverVersion As Integer
+    ''Declare Function DestroyWindow Lib "user32" (ByVal hndw As Integer) As Boolean
 
 
 
-    Private Function ReturnDriver() As Integer
-        Dim DriverName As String = Space(100)
-        Dim DriverVersion As String = Space(100)
-        Dim DriverIndex As Integer = Nothing
-        For i As Integer = 0 To 9
-            If capGetDriverDescriptionA(i, DriverName, 80, DriverVersion, 80) Then
-                DriverIndex = i
-                Exit For
-            End If
-        Next
-        Return DriverIndex
-    End Function
+    ''Private DriverVersion As Integer
+
+
+
+    ''Private Function ReturnDriver() As Integer
+    ''    Dim DriverName As String = Space(100)
+    ''    Dim DriverVersion As String = Space(100)
+    ''    Dim DriverIndex As Integer = Nothing
+    ''    For i As Integer = 0 To 9
+    ''        If capGetDriverDescriptionA(i, DriverName, 80, DriverVersion, 80) Then
+    ''            DriverIndex = i
+    ''            Exit For
+    ''        End If
+    ''    Next
+    ''    Return DriverIndex
+    ''End Function
 
 
 #End Region
@@ -1433,13 +1515,12 @@ Public Class frmPhenoSnap
     End Sub
 
     Private Sub EnumerateVideoModes(device As VideoCaptureDevice)
-        Exit Sub
+        ' Exit Sub
         ' get resolutions for selected video source
         Me.Cursor = Cursors.WaitCursor
         cmbVideoModes.Items.Clear()
         Try
-            Dim VideoCapabilities = device.VideoCapabilities
-            Dim capabilty As VideoCapabilities
+            VideoCapabilities = device.VideoCapabilities
             For i = 0 To VideoCapabilities.Count - 1
                 If Not cmbVideoModes.Items.Contains(VideoCapabilities(i).FrameSize) Then
                     cmbVideoModes.Items.Add(VideoCapabilities(i).FrameSize)
@@ -1458,7 +1539,7 @@ Public Class frmPhenoSnap
     End Sub
 
 #Region "IC (Image Capture)"
- 
+
 
     Private Sub btnICSet_Click(sender As Object, e As EventArgs) Handles btnICSet.Click
         'Make a button called btnICSet to set the save path
@@ -1492,10 +1573,6 @@ Public Class frmPhenoSnap
 
 #End Region
 
-
-
-
-
     Private Sub WebCamStartVideo()
         Try
 
@@ -1508,8 +1585,8 @@ Public Class frmPhenoSnap
                 VideoCaptureSource = New VideoCaptureDevice(VideoDevices(cmbVideoSource.SelectedIndex).MonikerString)
                 Try
                     VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(cmbVideoModes.SelectedIndex)
-                    ' VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(18)
 
+                    ' VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(18)
                     '  Dim result1 As Boolean = VideoCaptureSource.SetCameraProperty(CameraControlProperty.Exposure, txtBrightness.Text, CameraControlFlags.Manual)
                 Catch ex As Exception
                     Beep()
@@ -1642,4 +1719,35 @@ Public Class frmPhenoSnap
 
     End Sub
 
+    Private Sub pctCam1LastImage_Click(sender As Object, e As EventArgs) Handles pctCam1LastImage.Click
+        Try
+            Process.Start(rootTempFullSavePath(1))
+
+        Catch ex As Exception
+            Beep()
+            txtOutput.Text = "Error loading last image from filepath: " & rootTempFullSavePath(1) & vbCrLf & "Error message: " & ex.Message
+        End Try
+    End Sub
+
+    Private Sub tmrSetVideoSize_Tick(sender As Object, e As EventArgs) Handles tmrSetVideoSize.Tick
+        '     WaitForChangedResult for the webcam to load and then try to set the video size 
+        Application.DoEvents()
+        Try
+            If cmbCam1CamType.Text = "WebCam" Then
+                If VideoSourcePlayer1.VideoSource.IsRunning Then
+                    Dim vidSizeIndex = cmbVideoModes.FindStringExact(gWebCamVideoSize)
+                    If vidSizeIndex > 0 Then cmbVideoModes.SelectedIndex = vidSizeIndex
+                    tmrSetVideoSize.Enabled = False
+                Else
+                    gSetSizeTimer = gSetSizeTimer + 1
+                End If
+            End If
+
+            If gSetSizeTimer > 10 Then Exit Sub 'Quit after five seconds of trying
+
+        Catch ex As Exception
+            tmrSetVideoSize.Enabled = False
+        End Try
+
+    End Sub
 End Class

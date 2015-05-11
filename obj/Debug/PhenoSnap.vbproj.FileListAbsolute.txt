@@ -109,6 +109,7 @@ X:\Storage\users\Tim\code\PhenoSnapVB\obj\Debug\PhenoSnap.Resources.resources
 X:\Storage\users\Tim\code\PhenoSnapVB\obj\Debug\PhenoSnap.vbproj.GenerateResource.Cache
 X:\Storage\users\Tim\code\PhenoSnapVB\obj\Debug\PhenoSnap.exe.manifest
 X:\Storage\users\Tim\code\PhenoSnapVB\obj\Debug\PhenoSnap.application
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\bin\Debug\bin\Debug\Icons8-Windows-8-Plants-Leaf.ico
 C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\bin\Debug\PhenoSnap.exe.config
 C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\bin\Debug\PhenoSnap.exe.manifest
 C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\bin\Debug\PhenoSnap.application
@@ -123,5 +124,3 @@ C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\obj\Debug\Pheno
 C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\obj\Debug\PhenoSnap.exe
 C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\obj\Debug\PhenoSnap.xml
 C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\obj\Debug\PhenoSnap.pdb
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\bin\Debug\AForge.dll
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\bin\Debug\AForge.Imaging.dll

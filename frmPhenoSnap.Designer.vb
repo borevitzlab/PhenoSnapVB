@@ -23,6 +23,7 @@ Partial Class frmPhenoSnap
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmPhenoSnap))
         Me.txtBarcodeValue = New System.Windows.Forms.TextBox()
         Me.txtURL1 = New System.Windows.Forms.TextBox()
         Me.txtOutput = New System.Windows.Forms.TextBox()
@@ -97,6 +98,8 @@ Partial Class frmPhenoSnap
         Me.lblWebCamFocus = New System.Windows.Forms.Label()
         Me.lblWebCamResolution = New System.Windows.Forms.Label()
         Me.pnlWebCamControls = New System.Windows.Forms.Panel()
+        Me.chkBeepOnCapture = New System.Windows.Forms.CheckBox()
+        Me.tmrSetVideoSize = New System.Windows.Forms.Timer(Me.components)
         CType(Me.pctQR, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.panPrintButtons.SuspendLayout()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -111,7 +114,7 @@ Partial Class frmPhenoSnap
         '
         'txtBarcodeValue
         '
-        Me.txtBarcodeValue.AcceptsReturn = True
+        Me.txtBarcodeValue.CausesValidation = False
         Me.txtBarcodeValue.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtBarcodeValue.Location = New System.Drawing.Point(11, 6)
         Me.txtBarcodeValue.Margin = New System.Windows.Forms.Padding(2)
@@ -169,7 +172,7 @@ Partial Class frmPhenoSnap
         '
         Me.lblBarcodeValue.AutoSize = True
         Me.lblBarcodeValue.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblBarcodeValue.Location = New System.Drawing.Point(18, 331)
+        Me.lblBarcodeValue.Location = New System.Drawing.Point(34, 329)
         Me.lblBarcodeValue.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblBarcodeValue.Name = "lblBarcodeValue"
         Me.lblBarcodeValue.Size = New System.Drawing.Size(68, 22)
@@ -228,7 +231,7 @@ Partial Class frmPhenoSnap
         '
         Me.lblLastPlant.AutoSize = True
         Me.lblLastPlant.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblLastPlant.Location = New System.Drawing.Point(90, 331)
+        Me.lblLastPlant.Location = New System.Drawing.Point(119, 329)
         Me.lblLastPlant.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblLastPlant.Name = "lblLastPlant"
         Me.lblLastPlant.Size = New System.Drawing.Size(130, 22)
@@ -359,7 +362,7 @@ Partial Class frmPhenoSnap
         Me.lblCurBarcode.Location = New System.Drawing.Point(18, 303)
         Me.lblCurBarcode.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lblCurBarcode.Name = "lblCurBarcode"
-        Me.lblCurBarcode.Size = New System.Drawing.Size(71, 30)
+        Me.lblCurBarcode.Size = New System.Drawing.Size(103, 30)
         Me.lblCurBarcode.TabIndex = 22
         Me.lblCurBarcode.Text = "111"
         Me.lblCurBarcode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -773,7 +776,7 @@ Partial Class frmPhenoSnap
         Me.txtCountDownTimeSecs.AcceptsReturn = True
         Me.txtCountDownTimeSecs.Cursor = System.Windows.Forms.Cursors.Default
         Me.txtCountDownTimeSecs.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCountDownTimeSecs.Location = New System.Drawing.Point(416, 156)
+        Me.txtCountDownTimeSecs.Location = New System.Drawing.Point(377, 156)
         Me.txtCountDownTimeSecs.Margin = New System.Windows.Forms.Padding(2)
         Me.txtCountDownTimeSecs.Name = "txtCountDownTimeSecs"
         Me.txtCountDownTimeSecs.Size = New System.Drawing.Size(53, 26)
@@ -787,7 +790,7 @@ Partial Class frmPhenoSnap
         Me.Label8.AutoSize = True
         Me.Label8.BackColor = System.Drawing.SystemColors.Control
         Me.Label8.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.Location = New System.Drawing.Point(248, 158)
+        Me.Label8.Location = New System.Drawing.Point(224, 158)
         Me.Label8.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(156, 22)
@@ -905,6 +908,21 @@ Partial Class frmPhenoSnap
         Me.pnlWebCamControls.Size = New System.Drawing.Size(497, 103)
         Me.pnlWebCamControls.TabIndex = 80
         '
+        'chkBeepOnCapture
+        '
+        Me.chkBeepOnCapture.AutoSize = True
+        Me.chkBeepOnCapture.Font = New System.Drawing.Font("Trebuchet MS", 12.0!)
+        Me.chkBeepOnCapture.Location = New System.Drawing.Point(436, 156)
+        Me.chkBeepOnCapture.Name = "chkBeepOnCapture"
+        Me.chkBeepOnCapture.Size = New System.Drawing.Size(65, 26)
+        Me.chkBeepOnCapture.TabIndex = 81
+        Me.chkBeepOnCapture.Text = "Beep"
+        Me.chkBeepOnCapture.UseVisualStyleBackColor = True
+        '
+        'tmrSetVideoSize
+        '
+        Me.tmrSetVideoSize.Interval = 1000
+        '
         'frmPhenoSnap
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -946,6 +964,8 @@ Partial Class frmPhenoSnap
         Me.Controls.Add(Me.lblCam1URL)
         Me.Controls.Add(Me.Label8)
         Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.chkBeepOnCapture)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Margin = New System.Windows.Forms.Padding(2)
         Me.Name = "frmPhenoSnap"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
@@ -1023,7 +1043,6 @@ Partial Class frmPhenoSnap
     Friend WithEvents txtCountDownTimeSecs As System.Windows.Forms.TextBox
     Friend WithEvents ToolTip1 As System.Windows.Forms.ToolTip
     Friend WithEvents Label8 As System.Windows.Forms.Label
-    Friend WithEvents VideoSourcePlayer1 As AForge.Controls.VideoSourcePlayer
     Friend WithEvents cmbVideoModes As System.Windows.Forms.ComboBox
     Friend WithEvents cmbVideoSource As System.Windows.Forms.ComboBox
     Friend WithEvents btnDisconnect As System.Windows.Forms.Button
@@ -1040,5 +1059,8 @@ Partial Class frmPhenoSnap
     Friend WithEvents lblWebCamFocus As System.Windows.Forms.Label
     Friend WithEvents lblWebCamResolution As System.Windows.Forms.Label
     Friend WithEvents pnlWebCamControls As System.Windows.Forms.Panel
+    Friend WithEvents chkBeepOnCapture As System.Windows.Forms.CheckBox
+    Friend WithEvents VideoSourcePlayer1 As AForge.Controls.VideoSourcePlayer
+    Friend WithEvents tmrSetVideoSize As System.Windows.Forms.Timer
 
 End Class

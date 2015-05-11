@@ -218,7 +218,7 @@ Module Helpers
     End Function
     Friend Function GetIndexOf(colNameText As String, DataGridView As DataGridView) As Integer
         Try
-            For i = 1 To (DataGridView.Columns.Count - 1)
+            For i = 0 To (DataGridView.Columns.Count - 1)
                 If UCase(DataGridView.Columns(i).Name) = UCase(colNameText) Then 'Forcing to uppercase means the comparison isn't case sensitive
                     Return i
                 End If
