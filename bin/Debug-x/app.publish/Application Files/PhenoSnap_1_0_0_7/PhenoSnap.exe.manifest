@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
+  <asmv1:assemblyIdentity name="PhenoSnap.exe" version="1.0.0.7" publicKeyToken="57cbab7771c8864b" language="neutral" processorArchitecture="msil" type="win32" />
+  <description asmv2:iconFile="Icons8-Windows-8-Plants-Leaf.ico" xmlns="urn:schemas-microsoft-com:asm.v1" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="PhenoSnap" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="PhenoSnap.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+      <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
+        <!--
+          UAC Manifest Options
+          If you want to change the Windows User Account Control level replace the 
+          requestedExecutionLevel node with one of the following.
+
+        <requestedExecutionLevel  level="asInvoker" uiAccess="false" />
+        <requestedExecutionLevel  level="requireAdministrator" uiAccess="false" />
+        <requestedExecutionLevel  level="highestAvailable" uiAccess="false" />
+
+         If you want to utilize File and Registry Virtualization for backward 
+         compatibility then delete the requestedExecutionLevel node.
+    -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="5" minorVersion="1" buildNumber="2600" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="4.0.30319.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AForge.Controls.dll" size="44544">
+      <assemblyIdentity name="AForge.Controls" version="2.2.5.0" publicKeyToken="A8AC264D1DC6B9D9" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>4/z+NUxgNqOyZLyoY65w9npU/DZD4rOt9VPCl4eoRRU=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AForge.Video.dll" size="20992">
+      <assemblyIdentity name="AForge.Video" version="2.2.5.0" publicKeyToken="CBFB6E07D173C401" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>uvpu0EyieCJwB0EnoEmN3gIsKp9Alsa7K448CLs9QE0=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AForge.Video.DirectShow.dll" size="61440">
+      <assemblyIdentity name="AForge.Video.DirectShow" version="2.2.5.0" publicKeyToken="61EA4348D43881B7" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>Zm1EeY2U6voe0hr3npvAKT/9lvhjq12H94vO6e+f/Ws=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AForge.Video.VFW.dll" size="17408">
+      <assemblyIdentity name="AForge.Video.VFW" version="2.2.4.0" publicKeyToken="A82F807C999637C8" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>RPn4YftQsExqJ2diX/79jQaRvYepu5Wp3Q01UmDdjY8=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="PhenoSnap.exe" size="430592">
+      <assemblyIdentity name="PhenoSnap" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>mDuGDUm1gXz84NmfZEweAOYyfURZXvW3AiPMpKK/PHc=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="Icons8-Windows-8-Plants-Leaf.ico" size="165318">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>DMx3sKdx6jC0IbjqB2KTzMW8H5Gj/wB0vxy9TAiQhUE=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="PhenoSnap.exe.config" size="1110">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>t8nHtIgRaDm3Oq2O24ZvLu7fQ6wYkZpDpsQKLgLjb+Y=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=idea-PC\Tim Brown" issuerKeyHash="caaf3104f7e335b640bc0113c965e015b5341afe" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>+2zZdUaKJUTP7hqom7jmYM+NAWl8WMar0grYiKTR1s4=</DigestValue></Reference></SignedInfo><SignatureValue>L+9yT9+uFEYcl4Irh1RFG8WKNUvQ7pqzHY1W8veyfMVi2QPtccb1pNPIJncph6hyhAfqlVUbPoysuxxficnLEozTmhf8M1d17jpq9EBYMONyCXxQ2pJEdc+jTdnfyEjTO6iuBoKDA/KlBgV9CuNOjKNk4WgqWu2HZpS9w4t8hQU=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>vyVA3EzlXSk43rj5xIcBvOfy8U92ryXUSylLOmmoxreyKSIblCON4oywHmWjkk6tkAgnqtxLenj/37kjVj7q3HGB9TMkOMtjtIWIRn8WEyceidLSPl9tbhrqtzgTAWmUTaiGqsfR0gyLzAR6q1YGKTG5TH2NaCEvwmMTqM8P1ns=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="ced6d1a488d80ad2abc6587c69018dcf60e6b89ba81aeecf44258a4675d96cfb" Description="" Url=""><as:assemblyIdentity name="PhenoSnap.exe" version="1.0.0.7" publicKeyToken="57cbab7771c8864b" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=idea-PC\Tim Brown</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha256" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" /><DigestValue>X5Rvw5bvKQLoJdUJzVtFn6BJIr0s7UKa6akf+TuBpOo=</DigestValue></Reference></SignedInfo><SignatureValue>EhOEk8EtixFw30mDcHREGmFD/zbXjbGRMKtIHZq5nQ2I7SPbf8hT2M3WxJ4fSYPtEDxJBE68EU8Wmentq4QBFsqva6j3WQ68fdpc3T6/5tvOu2Jg0PlAjj78qASgDfyMtBn91HSamxoVQ12eQVOIWyytKMAKuRpd3Ofi950d+MU=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>vyVA3EzlXSk43rj5xIcBvOfy8U92ryXUSylLOmmoxreyKSIblCON4oywHmWjkk6tkAgnqtxLenj/37kjVj7q3HGB9TMkOMtjtIWIRn8WEyceidLSPl9tbhrqtzgTAWmUTaiGqsfR0gyLzAR6q1YGKTG5TH2NaCEvwmMTqM8P1ns=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB3TCCAUagAwIBAgIQNIBmUVT7cbJCCkoam1JwEzANBgkqhkiG9w0BAQsFADAtMSswKQYDVQQDHiIAaQBkAGUAYQAtAFAAQwBcAFQAaQBtACAAQgByAG8AdwBuMB4XDTE1MDUxMDA3NDcwMloXDTE2MDUwOTEzNDcwMlowLTErMCkGA1UEAx4iAGkAZABlAGEALQBQAEMAXABUAGkAbQAgAEIAcgBvAHcAbjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAvyVA3EzlXSk43rj5xIcBvOfy8U92ryXUSylLOmmoxreyKSIblCON4oywHmWjkk6tkAgnqtxLenj/37kjVj7q3HGB9TMkOMtjtIWIRn8WEyceidLSPl9tbhrqtzgTAWmUTaiGqsfR0gyLzAR6q1YGKTG5TH2NaCEvwmMTqM8P1nsCAwEAATANBgkqhkiG9w0BAQsFAAOBgQA5Qg5w7uq0kQLMDa7b4QvBQzlO1StGe4IyhZY4X42DjPFpQMfrkwEkLpQrwv2ouLo7V+cyAtcyEKuPAGdwdWTLTd8H4CQAVaDxPYeXioxhHAEUo6y7xeo7UU9WjeF7Don1OYsJfIh81ugNUj+LgBlut/v8yd+SiMMuXesH4dOzXQ==</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

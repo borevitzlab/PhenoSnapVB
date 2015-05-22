@@ -23,7 +23,7 @@
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
+    <MapFileExtensions>false</MapFileExtensions>
     <InstallUrl>http://phenocam.anu.edu.au/cloud/a_software/PhenoSnapVB/</InstallUrl>
     <SupportUrl>http://borevitzlab.anu.edu.au</SupportUrl>
     <ProductName>PhenoSnap</ProductName>
@@ -31,7 +31,7 @@
     <SuiteName>TraitCapture</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationRevision>9</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -83,7 +83,7 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>bin\Debug\Icons8-Windows-8-Plants-Leaf.ico</ApplicationIcon>
+    <ApplicationIcon>Icons8-Windows-8-Plants-Leaf.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AForge.Controls, Version=2.2.5.0, Culture=neutral, PublicKeyToken=a8ac264d1dc6b9d9, processorArchitecture=MSIL">
@@ -197,12 +197,10 @@
     <None Include="Resources\Icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bin\Debug\Icons8-Windows-8-Plants-Leaf.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Folder Include="bin\Debug\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bin\Debug\Beep Ping-SoundBible.com-217088958.wav" />
+    <Content Include="Icons8-Windows-8-Plants-Leaf.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
