@@ -82,10 +82,7 @@ for i = 1:N
     % Need to make sure we didn't detect more than one shape
     % For now, let's grab the right-most shape and hope this selects the leaf (not rigorously tested)
     % Better way to do it would be to pick the object with more green pixels
-    if length(Stats) > 1
-        
-    end
-    
+    [is
     
     Results{1,1} = FileName{i};
     Results{2,1} = 'Area';
