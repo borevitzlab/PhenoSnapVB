@@ -29,8 +29,13 @@ else
     return
 end
 
+
+--> After user has selected the files/folders, ask them if they want to save the output data 
+--   Or maybe do this at the end?
     
-    
+--> Code needs to be restructured to support the different methods of loading files, 
+--   but we just need to create the full filelist from any of the methods and 
+--   pass it to the Filename/Pathname array
 
 %[FileName,PathName] = uigetdir('X:\a_data\TimeStreams\Atkins\BVZ0047\BVZ0047-originals\2015_05_22\*.jpg','MultiSelect','on','Select the Experiment root folder (The folder with the EXPID name)'); % set path to your images
 [FileName,PathName] = uigetfile('X:\a_data\TimeStreams\Atkins\BVZ0047\BVZ0047-originals\2015_05_22\*.jpg','MultiSelect','on','Select the Experiment root folder (The folder with the EXPID name)'); % set path to your images
