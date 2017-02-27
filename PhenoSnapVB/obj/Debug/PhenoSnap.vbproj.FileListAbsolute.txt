@@ -36,21 +36,6 @@ C:\Users\Tim Brown\Documents\ANU\Projects\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoS
 C:\Users\Tim Brown\Documents\ANU\Projects\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.exe
 C:\Users\Tim Brown\Documents\ANU\Projects\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.xml
 C:\Users\Tim Brown\Documents\ANU\Projects\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.pdb
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\PhenoSnap.exe.config
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.exe
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.xml
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.pdb
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\PhenoSnap.exe
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\PhenoSnap.pdb
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\PhenoSnap.xml
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\ZedGraph.dll
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\Emgu.CV.xml
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\Emgu.CV.UI.xml
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\Emgu.Util.xml
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.vbprojResolveAssemblyReference.cache
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.frmPhenoSnap.resources
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.Resources.resources
-C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.vbproj.GenerateResource.Cache
 Z:\Storage\users\Tim\code\PhenoSnapVB\bin\Debug\PhenoSnap.exe.config
 Z:\Storage\users\Tim\code\PhenoSnapVB\bin\Debug\PhenoSnap.exe
 Z:\Storage\users\Tim\code\PhenoSnapVB\bin\Debug\PhenoSnap.pdb
@@ -134,3 +119,23 @@ C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\bin\Debug\AForg
 C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\bin\Debug\AForge.Imaging.xml
 C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\bin\Debug\AForge.Math.xml
 C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnapVB\obj\Debug\PhenoSnap.vbprojResolveAssemblyReference.cache
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\PhenoSnap.exe.config
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\PhenoSnap.exe.manifest
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\PhenoSnap.application
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\PhenoSnap.exe
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\PhenoSnap.pdb
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\PhenoSnap.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\AForge.dll
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\AForge.Controls.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.vbprojResolveAssemblyReference.cache
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.frmChecklist.resources
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.frmPhenoSnap.resources
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.Resources.resources
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.vbproj.GenerateResource.Cache
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.exe.manifest
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.application
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.exe
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.xml
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\obj\Debug\PhenoSnap.pdb
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\AForge.Math.dll
+C:\Users\Tim Brown\Documents\ANU\Projects\Programing\PhenoSnap\PhenoSnapVB\bin\Debug\AForge.Math.xml

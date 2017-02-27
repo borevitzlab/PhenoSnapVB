@@ -88,7 +88,6 @@ Partial Class frmPhenoSnap
         Me.txtCountDownTimeSecs = New System.Windows.Forms.TextBox()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.ToolTip1 = New System.Windows.Forms.ToolTip(Me.components)
-        Me.VideoSourcePlayer1 = New AForge.Controls.VideoSourcePlayer()
         Me.cmbVideoModes = New System.Windows.Forms.ComboBox()
         Me.cmbVideoSource = New System.Windows.Forms.ComboBox()
         Me.pctImageLiveImage = New System.Windows.Forms.PictureBox()
@@ -99,7 +98,12 @@ Partial Class frmPhenoSnap
         Me.lblWebCamResolution = New System.Windows.Forms.Label()
         Me.pnlWebCamControls = New System.Windows.Forms.Panel()
         Me.chkBeepOnCapture = New System.Windows.Forms.CheckBox()
-        Me.tmrSetVideoSize = New System.Windows.Forms.Timer(Me.components)
+        Me.tmrStartWebcam = New System.Windows.Forms.Timer(Me.components)
+        Me.chkMultiLeaf = New System.Windows.Forms.CheckBox()
+        Me.txtCurLeafNum = New System.Windows.Forms.TextBox()
+        Me.lblCurleafnum = New System.Windows.Forms.Label()
+        Me.VideoSourcePlayer1 = New AForge.Controls.VideoSourcePlayer()
+        Me.Panel2 = New System.Windows.Forms.Panel()
         CType(Me.pctQR, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.panPrintButtons.SuspendLayout()
         CType(Me.DataGridView1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -110,16 +114,17 @@ Partial Class frmPhenoSnap
         CType(Me.pctImageLiveImage, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.trkFocus, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlWebCamControls.SuspendLayout()
+        Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'txtBarcodeValue
         '
         Me.txtBarcodeValue.CausesValidation = False
         Me.txtBarcodeValue.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtBarcodeValue.Location = New System.Drawing.Point(11, 6)
-        Me.txtBarcodeValue.Margin = New System.Windows.Forms.Padding(2)
+        Me.txtBarcodeValue.Location = New System.Drawing.Point(15, 7)
+        Me.txtBarcodeValue.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtBarcodeValue.Name = "txtBarcodeValue"
-        Me.txtBarcodeValue.Size = New System.Drawing.Size(81, 26)
+        Me.txtBarcodeValue.Size = New System.Drawing.Size(107, 31)
         Me.txtBarcodeValue.TabIndex = 0
         Me.txtBarcodeValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
         '
@@ -127,10 +132,10 @@ Partial Class frmPhenoSnap
         '
         Me.txtURL1.AcceptsReturn = True
         Me.txtURL1.Font = New System.Drawing.Font("Trebuchet MS", 10.0!)
-        Me.txtURL1.Location = New System.Drawing.Point(113, 186)
-        Me.txtURL1.Margin = New System.Windows.Forms.Padding(2)
+        Me.txtURL1.Location = New System.Drawing.Point(151, 229)
+        Me.txtURL1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtURL1.Name = "txtURL1"
-        Me.txtURL1.Size = New System.Drawing.Size(395, 23)
+        Me.txtURL1.Size = New System.Drawing.Size(525, 27)
         Me.txtURL1.TabIndex = 1
         Me.txtURL1.Text = "http://150.203.36.26/axis-cgi/jpg/image.cgi"
         '
@@ -138,21 +143,21 @@ Partial Class frmPhenoSnap
         '
         Me.txtOutput.AcceptsReturn = True
         Me.txtOutput.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtOutput.Location = New System.Drawing.Point(11, 374)
-        Me.txtOutput.Margin = New System.Windows.Forms.Padding(2)
+        Me.txtOutput.Location = New System.Drawing.Point(15, 460)
+        Me.txtOutput.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtOutput.Multiline = True
         Me.txtOutput.Name = "txtOutput"
-        Me.txtOutput.Size = New System.Drawing.Size(620, 44)
+        Me.txtOutput.Size = New System.Drawing.Size(825, 53)
         Me.txtOutput.TabIndex = 4
         '
         'txtExpID
         '
         Me.txtExpID.AcceptsReturn = True
         Me.txtExpID.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtExpID.Location = New System.Drawing.Point(111, 42)
-        Me.txtExpID.Margin = New System.Windows.Forms.Padding(2)
+        Me.txtExpID.Location = New System.Drawing.Point(148, 52)
+        Me.txtExpID.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtExpID.Name = "txtExpID"
-        Me.txtExpID.Size = New System.Drawing.Size(99, 26)
+        Me.txtExpID.Size = New System.Drawing.Size(131, 31)
         Me.txtExpID.TabIndex = 5
         Me.txtExpID.Text = "BVZ0047"
         '
@@ -160,10 +165,9 @@ Partial Class frmPhenoSnap
         '
         Me.lblExpID.AutoSize = True
         Me.lblExpID.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblExpID.Location = New System.Drawing.Point(51, 44)
-        Me.lblExpID.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblExpID.Location = New System.Drawing.Point(68, 54)
         Me.lblExpID.Name = "lblExpID"
-        Me.lblExpID.Size = New System.Drawing.Size(56, 22)
+        Me.lblExpID.Size = New System.Drawing.Size(69, 26)
         Me.lblExpID.TabIndex = 6
         Me.lblExpID.Text = "EXP ID"
         Me.lblExpID.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -172,10 +176,9 @@ Partial Class frmPhenoSnap
         '
         Me.lblBarcodeValue.AutoSize = True
         Me.lblBarcodeValue.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblBarcodeValue.Location = New System.Drawing.Point(34, 329)
-        Me.lblBarcodeValue.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblBarcodeValue.Location = New System.Drawing.Point(45, 405)
         Me.lblBarcodeValue.Name = "lblBarcodeValue"
-        Me.lblBarcodeValue.Size = New System.Drawing.Size(68, 22)
+        Me.lblBarcodeValue.Size = New System.Drawing.Size(85, 26)
         Me.lblBarcodeValue.TabIndex = 7
         Me.lblBarcodeValue.Text = "Barcode"
         Me.lblBarcodeValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -184,10 +187,9 @@ Partial Class frmPhenoSnap
         '
         Me.lblCam1URL.AutoSize = True
         Me.lblCam1URL.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCam1URL.Location = New System.Drawing.Point(33, 186)
-        Me.lblCam1URL.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblCam1URL.Location = New System.Drawing.Point(44, 229)
         Me.lblCam1URL.Name = "lblCam1URL"
-        Me.lblCam1URL.Size = New System.Drawing.Size(79, 22)
+        Me.lblCam1URL.Size = New System.Drawing.Size(100, 26)
         Me.lblCam1URL.TabIndex = 8
         Me.lblCam1URL.Text = "Cam URL:"
         Me.lblCam1URL.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -196,10 +198,9 @@ Partial Class frmPhenoSnap
         '
         Me.lblIDNote.AutoSize = True
         Me.lblIDNote.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblIDNote.Location = New System.Drawing.Point(96, 8)
-        Me.lblIDNote.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblIDNote.Location = New System.Drawing.Point(128, 10)
         Me.lblIDNote.Name = "lblIDNote"
-        Me.lblIDNote.Size = New System.Drawing.Size(314, 22)
+        Me.lblIDNote.Size = New System.Drawing.Size(403, 26)
         Me.lblIDNote.TabIndex = 9
         Me.lblIDNote.Text = "<-- Place cursor in box and scan plant label"
         Me.lblIDNote.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
@@ -208,10 +209,9 @@ Partial Class frmPhenoSnap
         '
         Me.Label1.AutoSize = True
         Me.Label1.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(14, 351)
-        Me.Label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label1.Location = New System.Drawing.Point(19, 432)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(73, 22)
+        Me.Label1.Size = New System.Drawing.Size(94, 26)
         Me.Label1.TabIndex = 10
         Me.Label1.Text = "Messages"
         Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -220,10 +220,9 @@ Partial Class frmPhenoSnap
         '
         Me.lblLastImageName.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.lblLastImageName.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblLastImageName.Location = New System.Drawing.Point(88, 303)
-        Me.lblLastImageName.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblLastImageName.Location = New System.Drawing.Point(117, 373)
         Me.lblLastImageName.Name = "lblLastImageName"
-        Me.lblLastImageName.Size = New System.Drawing.Size(462, 30)
+        Me.lblLastImageName.Size = New System.Drawing.Size(566, 36)
         Me.lblLastImageName.TabIndex = 11
         Me.lblLastImageName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
@@ -231,10 +230,9 @@ Partial Class frmPhenoSnap
         '
         Me.lblLastPlant.AutoSize = True
         Me.lblLastPlant.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblLastPlant.Location = New System.Drawing.Point(119, 329)
-        Me.lblLastPlant.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblLastPlant.Location = New System.Drawing.Point(159, 405)
         Me.lblLastPlant.Name = "lblLastPlant"
-        Me.lblLastPlant.Size = New System.Drawing.Size(130, 22)
+        Me.lblLastPlant.Size = New System.Drawing.Size(168, 26)
         Me.lblLastPlant.TabIndex = 12
         Me.lblLastPlant.Text = "Last Image Name"
         Me.lblLastPlant.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -243,10 +241,9 @@ Partial Class frmPhenoSnap
         '
         Me.Label3.AutoSize = True
         Me.Label3.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.Location = New System.Drawing.Point(11, 73)
-        Me.Label3.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label3.Location = New System.Drawing.Point(15, 90)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(100, 22)
+        Me.Label3.Size = New System.Drawing.Size(126, 26)
         Me.Label3.TabIndex = 14
         Me.Label3.Text = "Save Folder:"
         Me.Label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -255,20 +252,20 @@ Partial Class frmPhenoSnap
         '
         Me.txtFileSavePath.AcceptsReturn = True
         Me.txtFileSavePath.Font = New System.Drawing.Font("Trebuchet MS", 10.0!)
-        Me.txtFileSavePath.Location = New System.Drawing.Point(112, 71)
-        Me.txtFileSavePath.Margin = New System.Windows.Forms.Padding(2)
+        Me.txtFileSavePath.Location = New System.Drawing.Point(149, 87)
+        Me.txtFileSavePath.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtFileSavePath.Name = "txtFileSavePath"
-        Me.txtFileSavePath.Size = New System.Drawing.Size(357, 23)
+        Me.txtFileSavePath.Size = New System.Drawing.Size(475, 27)
         Me.txtFileSavePath.TabIndex = 13
         Me.txtFileSavePath.Text = "C:\a_data\TimeStreams\Atkins\BVZ0047"
         '
         'btnOpenImFolder
         '
         Me.btnOpenImFolder.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnOpenImFolder.Location = New System.Drawing.Point(508, 70)
+        Me.btnOpenImFolder.Location = New System.Drawing.Point(691, 86)
         Me.btnOpenImFolder.Margin = New System.Windows.Forms.Padding(0)
         Me.btnOpenImFolder.Name = "btnOpenImFolder"
-        Me.btnOpenImFolder.Size = New System.Drawing.Size(108, 28)
+        Me.btnOpenImFolder.Size = New System.Drawing.Size(144, 34)
         Me.btnOpenImFolder.TabIndex = 15
         Me.btnOpenImFolder.Text = "Open Folder"
         Me.btnOpenImFolder.UseVisualStyleBackColor = True
@@ -279,10 +276,10 @@ Partial Class frmPhenoSnap
         'pctQR
         '
         Me.pctQR.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.pctQR.Location = New System.Drawing.Point(4, 7)
-        Me.pctQR.Margin = New System.Windows.Forms.Padding(2)
+        Me.pctQR.Location = New System.Drawing.Point(5, 9)
+        Me.pctQR.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.pctQR.Name = "pctQR"
-        Me.pctQR.Size = New System.Drawing.Size(90, 102)
+        Me.pctQR.Size = New System.Drawing.Size(119, 125)
         Me.pctQR.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
         Me.pctQR.TabIndex = 16
         Me.pctQR.TabStop = False
@@ -290,10 +287,10 @@ Partial Class frmPhenoSnap
         'btnGetQR
         '
         Me.btnGetQR.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!)
-        Me.btnGetQR.Location = New System.Drawing.Point(5, 3)
+        Me.btnGetQR.Location = New System.Drawing.Point(7, 4)
         Me.btnGetQR.Margin = New System.Windows.Forms.Padding(0)
         Me.btnGetQR.Name = "btnGetQR"
-        Me.btnGetQR.Size = New System.Drawing.Size(53, 20)
+        Me.btnGetQR.Size = New System.Drawing.Size(71, 25)
         Me.btnGetQR.TabIndex = 17
         Me.btnGetQR.Text = "GetQR"
         Me.btnGetQR.UseVisualStyleBackColor = True
@@ -301,10 +298,10 @@ Partial Class frmPhenoSnap
         'btnListPrinters
         '
         Me.btnListPrinters.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!)
-        Me.btnListPrinters.Location = New System.Drawing.Point(5, 24)
+        Me.btnListPrinters.Location = New System.Drawing.Point(7, 30)
         Me.btnListPrinters.Margin = New System.Windows.Forms.Padding(0)
         Me.btnListPrinters.Name = "btnListPrinters"
-        Me.btnListPrinters.Size = New System.Drawing.Size(53, 20)
+        Me.btnListPrinters.Size = New System.Drawing.Size(71, 25)
         Me.btnListPrinters.TabIndex = 18
         Me.btnListPrinters.Text = "List Printers"
         Me.btnListPrinters.UseVisualStyleBackColor = True
@@ -312,10 +309,10 @@ Partial Class frmPhenoSnap
         'btnPrintLabel
         '
         Me.btnPrintLabel.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!)
-        Me.btnPrintLabel.Location = New System.Drawing.Point(5, 44)
+        Me.btnPrintLabel.Location = New System.Drawing.Point(7, 54)
         Me.btnPrintLabel.Margin = New System.Windows.Forms.Padding(0)
         Me.btnPrintLabel.Name = "btnPrintLabel"
-        Me.btnPrintLabel.Size = New System.Drawing.Size(53, 20)
+        Me.btnPrintLabel.Size = New System.Drawing.Size(71, 25)
         Me.btnPrintLabel.TabIndex = 19
         Me.btnPrintLabel.Text = "Print Label"
         Me.btnPrintLabel.UseVisualStyleBackColor = True
@@ -326,19 +323,19 @@ Partial Class frmPhenoSnap
         Me.panPrintButtons.Controls.Add(Me.btnGetQR)
         Me.panPrintButtons.Controls.Add(Me.btnPrintLabel)
         Me.panPrintButtons.Controls.Add(Me.btnListPrinters)
-        Me.panPrintButtons.Location = New System.Drawing.Point(98, 6)
-        Me.panPrintButtons.Margin = New System.Windows.Forms.Padding(2)
+        Me.panPrintButtons.Location = New System.Drawing.Point(131, 7)
+        Me.panPrintButtons.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.panPrintButtons.Name = "panPrintButtons"
-        Me.panPrintButtons.Size = New System.Drawing.Size(65, 102)
+        Me.panPrintButtons.Size = New System.Drawing.Size(87, 126)
         Me.panPrintButtons.TabIndex = 20
         '
         'btnImport
         '
         Me.btnImport.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!)
-        Me.btnImport.Location = New System.Drawing.Point(5, 74)
+        Me.btnImport.Location = New System.Drawing.Point(7, 91)
         Me.btnImport.Margin = New System.Windows.Forms.Padding(0)
         Me.btnImport.Name = "btnImport"
-        Me.btnImport.Size = New System.Drawing.Size(53, 20)
+        Me.btnImport.Size = New System.Drawing.Size(71, 25)
         Me.btnImport.TabIndex = 20
         Me.btnImport.Text = "Import"
         Me.btnImport.UseVisualStyleBackColor = True
@@ -346,10 +343,10 @@ Partial Class frmPhenoSnap
         'btnCheckCam
         '
         Me.btnCheckCam.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnCheckCam.Location = New System.Drawing.Point(508, 155)
+        Me.btnCheckCam.Location = New System.Drawing.Point(691, 188)
         Me.btnCheckCam.Margin = New System.Windows.Forms.Padding(0)
         Me.btnCheckCam.Name = "btnCheckCam"
-        Me.btnCheckCam.Size = New System.Drawing.Size(108, 28)
+        Me.btnCheckCam.Size = New System.Drawing.Size(144, 34)
         Me.btnCheckCam.TabIndex = 21
         Me.btnCheckCam.Text = "Take Picture"
         Me.btnCheckCam.TextAlign = System.Drawing.ContentAlignment.TopCenter
@@ -359,10 +356,9 @@ Partial Class frmPhenoSnap
         '
         Me.lblCurBarcode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.lblCurBarcode.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCurBarcode.Location = New System.Drawing.Point(18, 303)
-        Me.lblCurBarcode.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblCurBarcode.Location = New System.Drawing.Point(24, 373)
         Me.lblCurBarcode.Name = "lblCurBarcode"
-        Me.lblCurBarcode.Size = New System.Drawing.Size(103, 30)
+        Me.lblCurBarcode.Size = New System.Drawing.Size(137, 36)
         Me.lblCurBarcode.TabIndex = 22
         Me.lblCurBarcode.Text = "111"
         Me.lblCurBarcode.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -371,10 +367,10 @@ Partial Class frmPhenoSnap
         '
         Me.chkAutoPrint.AutoSize = True
         Me.chkAutoPrint.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.chkAutoPrint.Location = New System.Drawing.Point(120, 6)
-        Me.chkAutoPrint.Margin = New System.Windows.Forms.Padding(2)
+        Me.chkAutoPrint.Location = New System.Drawing.Point(160, 7)
+        Me.chkAutoPrint.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.chkAutoPrint.Name = "chkAutoPrint"
-        Me.chkAutoPrint.Size = New System.Drawing.Size(148, 26)
+        Me.chkAutoPrint.Size = New System.Drawing.Size(187, 30)
         Me.chkAutoPrint.TabIndex = 23
         Me.chkAutoPrint.Text = "Auto Print Label?"
         Me.chkAutoPrint.UseVisualStyleBackColor = True
@@ -382,21 +378,20 @@ Partial Class frmPhenoSnap
         'DataGridView1
         '
         Me.DataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DataGridView1.Location = New System.Drawing.Point(10, 423)
-        Me.DataGridView1.Margin = New System.Windows.Forms.Padding(2)
+        Me.DataGridView1.Location = New System.Drawing.Point(13, 521)
+        Me.DataGridView1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.DataGridView1.Name = "DataGridView1"
         Me.DataGridView1.RowTemplate.Height = 24
-        Me.DataGridView1.Size = New System.Drawing.Size(817, 122)
+        Me.DataGridView1.Size = New System.Drawing.Size(1089, 150)
         Me.DataGridView1.TabIndex = 24
         '
         'lblUser
         '
         Me.lblUser.AutoSize = True
         Me.lblUser.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblUser.Location = New System.Drawing.Point(248, 44)
-        Me.lblUser.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblUser.Location = New System.Drawing.Point(331, 54)
         Me.lblUser.Name = "lblUser"
-        Me.lblUser.Size = New System.Drawing.Size(41, 22)
+        Me.lblUser.Size = New System.Drawing.Size(52, 26)
         Me.lblUser.TabIndex = 26
         Me.lblUser.Text = "User"
         Me.lblUser.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -405,10 +400,10 @@ Partial Class frmPhenoSnap
         '
         Me.txtUserName.AcceptsReturn = True
         Me.txtUserName.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtUserName.Location = New System.Drawing.Point(291, 42)
-        Me.txtUserName.Margin = New System.Windows.Forms.Padding(2)
+        Me.txtUserName.Location = New System.Drawing.Point(388, 52)
+        Me.txtUserName.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtUserName.Name = "txtUserName"
-        Me.txtUserName.Size = New System.Drawing.Size(178, 26)
+        Me.txtUserName.Size = New System.Drawing.Size(236, 31)
         Me.txtUserName.TabIndex = 25
         Me.txtUserName.Text = "Nur"
         '
@@ -416,10 +411,9 @@ Partial Class frmPhenoSnap
         '
         Me.Label4.AutoSize = True
         Me.Label4.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.Location = New System.Drawing.Point(40, 107)
-        Me.Label4.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label4.Location = New System.Drawing.Point(53, 132)
         Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(71, 22)
+        Me.Label4.Size = New System.Drawing.Size(88, 26)
         Me.Label4.TabIndex = 28
         Me.Label4.Text = "DB Path:"
         Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -428,11 +422,11 @@ Partial Class frmPhenoSnap
         '
         Me.txtPathToDB.AcceptsReturn = True
         Me.txtPathToDB.Font = New System.Drawing.Font("Trebuchet MS", 10.0!)
-        Me.txtPathToDB.Location = New System.Drawing.Point(112, 105)
-        Me.txtPathToDB.Margin = New System.Windows.Forms.Padding(2)
+        Me.txtPathToDB.Location = New System.Drawing.Point(149, 129)
+        Me.txtPathToDB.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtPathToDB.Multiline = True
         Me.txtPathToDB.Name = "txtPathToDB"
-        Me.txtPathToDB.Size = New System.Drawing.Size(357, 46)
+        Me.txtPathToDB.Size = New System.Drawing.Size(475, 56)
         Me.txtPathToDB.TabIndex = 27
         Me.txtPathToDB.Text = "C:\a_data\TimeStreams\Atkins\BVZ0047\_data\Plant ID for barcode-LinglingTest.csv"
         '
@@ -443,10 +437,10 @@ Partial Class frmPhenoSnap
         'btnSelectSaveFolder
         '
         Me.btnSelectSaveFolder.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnSelectSaveFolder.Location = New System.Drawing.Point(471, 71)
+        Me.btnSelectSaveFolder.Location = New System.Drawing.Point(628, 87)
         Me.btnSelectSaveFolder.Margin = New System.Windows.Forms.Padding(0)
         Me.btnSelectSaveFolder.Name = "btnSelectSaveFolder"
-        Me.btnSelectSaveFolder.Size = New System.Drawing.Size(37, 26)
+        Me.btnSelectSaveFolder.Size = New System.Drawing.Size(49, 32)
         Me.btnSelectSaveFolder.TabIndex = 29
         Me.btnSelectSaveFolder.Text = "..."
         Me.btnSelectSaveFolder.UseVisualStyleBackColor = True
@@ -454,10 +448,10 @@ Partial Class frmPhenoSnap
         'btnSelectDB
         '
         Me.btnSelectDB.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnSelectDB.Location = New System.Drawing.Point(471, 105)
+        Me.btnSelectDB.Location = New System.Drawing.Point(628, 129)
         Me.btnSelectDB.Margin = New System.Windows.Forms.Padding(0)
         Me.btnSelectDB.Name = "btnSelectDB"
-        Me.btnSelectDB.Size = New System.Drawing.Size(37, 26)
+        Me.btnSelectDB.Size = New System.Drawing.Size(49, 32)
         Me.btnSelectDB.TabIndex = 31
         Me.btnSelectDB.Text = "..."
         Me.btnSelectDB.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -466,20 +460,20 @@ Partial Class frmPhenoSnap
         'txtURL2
         '
         Me.txtURL2.AcceptsReturn = True
-        Me.txtURL2.Location = New System.Drawing.Point(82, 310)
-        Me.txtURL2.Margin = New System.Windows.Forms.Padding(2)
+        Me.txtURL2.Location = New System.Drawing.Point(109, 382)
+        Me.txtURL2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtURL2.Name = "txtURL2"
-        Me.txtURL2.Size = New System.Drawing.Size(315, 20)
+        Me.txtURL2.Size = New System.Drawing.Size(419, 22)
         Me.txtURL2.TabIndex = 33
         Me.txtURL2.Text = "http://150.203.71.26/image.jpg"
         '
         'pctCam2LastIm
         '
         Me.pctCam2LastIm.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pctCam2LastIm.Location = New System.Drawing.Point(21, 117)
-        Me.pctCam2LastIm.Margin = New System.Windows.Forms.Padding(2)
+        Me.pctCam2LastIm.Location = New System.Drawing.Point(28, 144)
+        Me.pctCam2LastIm.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.pctCam2LastIm.Name = "pctCam2LastIm"
-        Me.pctCam2LastIm.Size = New System.Drawing.Size(210, 140)
+        Me.pctCam2LastIm.Size = New System.Drawing.Size(279, 171)
         Me.pctCam2LastIm.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
         Me.pctCam2LastIm.TabIndex = 34
         Me.pctCam2LastIm.TabStop = False
@@ -487,11 +481,11 @@ Partial Class frmPhenoSnap
         'chkUseCam2
         '
         Me.chkUseCam2.AutoSize = True
-        Me.chkUseCam2.Location = New System.Drawing.Point(18, 310)
-        Me.chkUseCam2.Margin = New System.Windows.Forms.Padding(2)
+        Me.chkUseCam2.Location = New System.Drawing.Point(24, 382)
+        Me.chkUseCam2.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.chkUseCam2.Name = "chkUseCam2"
         Me.chkUseCam2.RightToLeft = System.Windows.Forms.RightToLeft.Yes
-        Me.chkUseCam2.Size = New System.Drawing.Size(56, 17)
+        Me.chkUseCam2.Size = New System.Drawing.Size(70, 21)
         Me.chkUseCam2.TabIndex = 36
         Me.chkUseCam2.Text = "Cam 2"
         Me.chkUseCam2.UseVisualStyleBackColor = True
@@ -506,10 +500,9 @@ Partial Class frmPhenoSnap
         Me.lblProgress.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
         Me.lblProgress.FlatStyle = System.Windows.Forms.FlatStyle.Popup
         Me.lblProgress.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblProgress.Location = New System.Drawing.Point(635, 348)
-        Me.lblProgress.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblProgress.Location = New System.Drawing.Point(847, 428)
         Me.lblProgress.Name = "lblProgress"
-        Me.lblProgress.Size = New System.Drawing.Size(192, 70)
+        Me.lblProgress.Size = New System.Drawing.Size(256, 86)
         Me.lblProgress.TabIndex = 37
         Me.lblProgress.Text = "Ready"
         Me.lblProgress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -519,20 +512,19 @@ Partial Class frmPhenoSnap
         Me.lblLastPlantScanned.AutoSize = True
         Me.lblLastPlantScanned.BackColor = System.Drawing.Color.White
         Me.lblLastPlantScanned.Font = New System.Drawing.Font("Microsoft Sans Serif", 15.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblLastPlantScanned.Location = New System.Drawing.Point(244, 144)
-        Me.lblLastPlantScanned.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblLastPlantScanned.Location = New System.Drawing.Point(325, 177)
         Me.lblLastPlantScanned.Name = "lblLastPlantScanned"
-        Me.lblLastPlantScanned.Size = New System.Drawing.Size(210, 25)
+        Me.lblLastPlantScanned.Size = New System.Drawing.Size(264, 29)
         Me.lblLastPlantScanned.TabIndex = 39
         Me.lblLastPlantScanned.Text = "lblLastPlantScanned"
         '
         'Button1
         '
         Me.Button1.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!)
-        Me.Button1.Location = New System.Drawing.Point(21, 48)
+        Me.Button1.Location = New System.Drawing.Point(28, 59)
         Me.Button1.Margin = New System.Windows.Forms.Padding(0)
         Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(74, 20)
+        Me.Button1.Size = New System.Drawing.Size(99, 25)
         Me.Button1.TabIndex = 40
         Me.Button1.Text = "Load Cam"
         Me.Button1.UseVisualStyleBackColor = True
@@ -542,10 +534,9 @@ Partial Class frmPhenoSnap
         '
         Me.lblCam2LastImage.AutoSize = True
         Me.lblCam2LastImage.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.2!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCam2LastImage.Location = New System.Drawing.Point(37, 240)
-        Me.lblCam2LastImage.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblCam2LastImage.Location = New System.Drawing.Point(49, 295)
         Me.lblCam2LastImage.Name = "lblCam2LastImage"
-        Me.lblCam2LastImage.Size = New System.Drawing.Size(137, 17)
+        Me.lblCam2LastImage.Size = New System.Drawing.Size(162, 20)
         Me.lblCam2LastImage.TabIndex = 42
         Me.lblCam2LastImage.Text = "Cam 2 Last Image"
         '
@@ -553,19 +544,19 @@ Partial Class frmPhenoSnap
         '
         Me.pnlQRCodes.Controls.Add(Me.pctQR)
         Me.pnlQRCodes.Controls.Add(Me.panPrintButtons)
-        Me.pnlQRCodes.Location = New System.Drawing.Point(291, 6)
-        Me.pnlQRCodes.Margin = New System.Windows.Forms.Padding(2)
+        Me.pnlQRCodes.Location = New System.Drawing.Point(388, 7)
+        Me.pnlQRCodes.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.pnlQRCodes.Name = "pnlQRCodes"
-        Me.pnlQRCodes.Size = New System.Drawing.Size(171, 117)
+        Me.pnlQRCodes.Size = New System.Drawing.Size(228, 144)
         Me.pnlQRCodes.TabIndex = 43
         '
         'btnReloadDB
         '
         Me.btnReloadDB.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnReloadDB.Location = New System.Drawing.Point(508, 104)
+        Me.btnReloadDB.Location = New System.Drawing.Point(691, 128)
         Me.btnReloadDB.Margin = New System.Windows.Forms.Padding(0)
         Me.btnReloadDB.Name = "btnReloadDB"
-        Me.btnReloadDB.Size = New System.Drawing.Size(108, 28)
+        Me.btnReloadDB.Size = New System.Drawing.Size(144, 34)
         Me.btnReloadDB.TabIndex = 44
         Me.btnReloadDB.Text = "ReloadDB"
         Me.btnReloadDB.UseVisualStyleBackColor = True
@@ -573,10 +564,10 @@ Partial Class frmPhenoSnap
         'Button2
         '
         Me.Button2.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!)
-        Me.Button2.Location = New System.Drawing.Point(21, 20)
+        Me.Button2.Location = New System.Drawing.Point(28, 25)
         Me.Button2.Margin = New System.Windows.Forms.Padding(0)
         Me.Button2.Name = "Button2"
-        Me.Button2.Size = New System.Drawing.Size(74, 20)
+        Me.Button2.Size = New System.Drawing.Size(99, 25)
         Me.Button2.TabIndex = 47
         Me.Button2.Text = "Save Picture"
         Me.Button2.UseVisualStyleBackColor = True
@@ -587,28 +578,29 @@ Partial Class frmPhenoSnap
         Me.cmbCam1CamType.Font = New System.Drawing.Font("Trebuchet MS", 11.0!)
         Me.cmbCam1CamType.FormattingEnabled = True
         Me.cmbCam1CamType.Items.AddRange(New Object() {"URL (IP Cam)", "WebCam"})
-        Me.cmbCam1CamType.Location = New System.Drawing.Point(112, 155)
+        Me.cmbCam1CamType.Location = New System.Drawing.Point(149, 191)
+        Me.cmbCam1CamType.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbCam1CamType.Name = "cmbCam1CamType"
-        Me.cmbCam1CamType.Size = New System.Drawing.Size(109, 28)
+        Me.cmbCam1CamType.Size = New System.Drawing.Size(144, 31)
         Me.cmbCam1CamType.TabIndex = 50
         '
         'cmbCam2CamType
         '
         Me.cmbCam2CamType.FormattingEnabled = True
         Me.cmbCam2CamType.Items.AddRange(New Object() {"URL (IP Cam)", "WebCam"})
-        Me.cmbCam2CamType.Location = New System.Drawing.Point(431, 310)
+        Me.cmbCam2CamType.Location = New System.Drawing.Point(575, 382)
+        Me.cmbCam2CamType.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbCam2CamType.Name = "cmbCam2CamType"
-        Me.cmbCam2CamType.Size = New System.Drawing.Size(91, 21)
+        Me.cmbCam2CamType.Size = New System.Drawing.Size(120, 24)
         Me.cmbCam2CamType.TabIndex = 51
         '
         'lblCamType
         '
         Me.lblCamType.AutoSize = True
         Me.lblCamType.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCamType.Location = New System.Drawing.Point(23, 158)
-        Me.lblCamType.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblCamType.Location = New System.Drawing.Point(31, 194)
         Me.lblCamType.Name = "lblCamType"
-        Me.lblCamType.Size = New System.Drawing.Size(85, 22)
+        Me.lblCamType.Size = New System.Drawing.Size(107, 26)
         Me.lblCamType.TabIndex = 52
         Me.lblCamType.Text = "Cam Type:"
         Me.lblCamType.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -617,10 +609,9 @@ Partial Class frmPhenoSnap
         '
         Me.lblWebCam1Info.AutoSize = True
         Me.lblWebCam1Info.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblWebCam1Info.Location = New System.Drawing.Point(16, 4)
-        Me.lblWebCam1Info.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblWebCam1Info.Location = New System.Drawing.Point(21, 5)
         Me.lblWebCam1Info.Name = "lblWebCam1Info"
-        Me.lblWebCam1Info.Size = New System.Drawing.Size(79, 22)
+        Me.lblWebCam1Info.Size = New System.Drawing.Size(97, 26)
         Me.lblWebCam1Info.TabIndex = 53
         Me.lblWebCam1Info.Text = "WebCam:"
         Me.lblWebCam1Info.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -628,10 +619,10 @@ Partial Class frmPhenoSnap
         'pctCam1LastImage
         '
         Me.pctCam1LastImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pctCam1LastImage.Location = New System.Drawing.Point(831, 347)
-        Me.pctCam1LastImage.Margin = New System.Windows.Forms.Padding(2)
+        Me.pctCam1LastImage.Location = New System.Drawing.Point(1108, 427)
+        Me.pctCam1LastImage.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.pctCam1LastImage.Name = "pctCam1LastImage"
-        Me.pctCam1LastImage.Size = New System.Drawing.Size(300, 198)
+        Me.pctCam1LastImage.Size = New System.Drawing.Size(399, 243)
         Me.pctCam1LastImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
         Me.pctCam1LastImage.TabIndex = 54
         Me.pctCam1LastImage.TabStop = False
@@ -639,30 +630,27 @@ Partial Class frmPhenoSnap
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(581, 9)
-        Me.Label2.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label2.Location = New System.Drawing.Point(775, 11)
         Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(53, 13)
+        Me.Label2.Size = New System.Drawing.Size(67, 17)
         Me.Label2.TabIndex = 55
         Me.Label2.Text = "Live View"
         '
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(834, 351)
-        Me.Label5.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label5.Location = New System.Drawing.Point(1112, 432)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(59, 13)
+        Me.Label5.Size = New System.Drawing.Size(77, 17)
         Me.Label5.TabIndex = 56
         Me.Label5.Text = "Last Image"
         '
         'lblUnused
         '
         Me.lblUnused.AutoSize = True
-        Me.lblUnused.Location = New System.Drawing.Point(8, 6)
-        Me.lblUnused.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblUnused.Location = New System.Drawing.Point(20, 2)
         Me.lblUnused.Name = "lblUnused"
-        Me.lblUnused.Size = New System.Drawing.Size(44, 13)
+        Me.lblUnused.Size = New System.Drawing.Size(57, 17)
         Me.lblUnused.TabIndex = 57
         Me.lblUnused.Text = "Unused"
         '
@@ -686,20 +674,20 @@ Partial Class frmPhenoSnap
         Me.Panel1.Controls.Add(Me.cmbCam2CamType)
         Me.Panel1.Controls.Add(Me.lblLastPlantScanned)
         Me.Panel1.Controls.Add(Me.chkAutoPrint)
-        Me.Panel1.Location = New System.Drawing.Point(1075, 531)
-        Me.Panel1.Margin = New System.Windows.Forms.Padding(2)
+        Me.Panel1.Location = New System.Drawing.Point(1411, 636)
+        Me.Panel1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(473, 373)
+        Me.Panel1.Size = New System.Drawing.Size(631, 459)
         Me.Panel1.TabIndex = 58
         Me.Panel1.Visible = False
         '
         'btnTest
         '
         Me.btnTest.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!)
-        Me.btnTest.Location = New System.Drawing.Point(21, 84)
+        Me.btnTest.Location = New System.Drawing.Point(28, 103)
         Me.btnTest.Margin = New System.Windows.Forms.Padding(0)
         Me.btnTest.Name = "btnTest"
-        Me.btnTest.Size = New System.Drawing.Size(209, 31)
+        Me.btnTest.Size = New System.Drawing.Size(279, 38)
         Me.btnTest.TabIndex = 75
         Me.btnTest.Text = "Brightness"
         Me.btnTest.UseVisualStyleBackColor = True
@@ -709,10 +697,10 @@ Partial Class frmPhenoSnap
         Me.txtBrightness.AcceptsReturn = True
         Me.txtBrightness.Cursor = System.Windows.Forms.Cursors.Default
         Me.txtBrightness.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtBrightness.Location = New System.Drawing.Point(193, 2)
-        Me.txtBrightness.Margin = New System.Windows.Forms.Padding(2)
+        Me.txtBrightness.Location = New System.Drawing.Point(257, 2)
+        Me.txtBrightness.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtBrightness.Name = "txtBrightness"
-        Me.txtBrightness.Size = New System.Drawing.Size(53, 26)
+        Me.txtBrightness.Size = New System.Drawing.Size(69, 30)
         Me.txtBrightness.TabIndex = 76
         Me.txtBrightness.Text = "5"
         Me.txtBrightness.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
@@ -721,10 +709,10 @@ Partial Class frmPhenoSnap
         'btnICCapture
         '
         Me.btnICCapture.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!)
-        Me.btnICCapture.Location = New System.Drawing.Point(226, 92)
+        Me.btnICCapture.Location = New System.Drawing.Point(301, 113)
         Me.btnICCapture.Margin = New System.Windows.Forms.Padding(0)
         Me.btnICCapture.Name = "btnICCapture"
-        Me.btnICCapture.Size = New System.Drawing.Size(67, 31)
+        Me.btnICCapture.Size = New System.Drawing.Size(89, 38)
         Me.btnICCapture.TabIndex = 72
         Me.btnICCapture.Text = "btnICCapture"
         Me.btnICCapture.UseVisualStyleBackColor = True
@@ -732,10 +720,10 @@ Partial Class frmPhenoSnap
         'btnICSet
         '
         Me.btnICSet.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!)
-        Me.btnICSet.Location = New System.Drawing.Point(226, 55)
+        Me.btnICSet.Location = New System.Drawing.Point(301, 68)
         Me.btnICSet.Margin = New System.Windows.Forms.Padding(0)
         Me.btnICSet.Name = "btnICSet"
-        Me.btnICSet.Size = New System.Drawing.Size(72, 31)
+        Me.btnICSet.Size = New System.Drawing.Size(96, 38)
         Me.btnICSet.TabIndex = 71
         Me.btnICSet.Text = "btnICSet"
         Me.btnICSet.UseVisualStyleBackColor = True
@@ -743,10 +731,10 @@ Partial Class frmPhenoSnap
         'btnDisconnect
         '
         Me.btnDisconnect.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!)
-        Me.btnDisconnect.Location = New System.Drawing.Point(273, 187)
+        Me.btnDisconnect.Location = New System.Drawing.Point(364, 230)
         Me.btnDisconnect.Margin = New System.Windows.Forms.Padding(0)
         Me.btnDisconnect.Name = "btnDisconnect"
-        Me.btnDisconnect.Size = New System.Drawing.Size(67, 31)
+        Me.btnDisconnect.Size = New System.Drawing.Size(89, 38)
         Me.btnDisconnect.TabIndex = 68
         Me.btnDisconnect.Text = "btnDisconnect"
         Me.btnDisconnect.UseVisualStyleBackColor = True
@@ -754,10 +742,10 @@ Partial Class frmPhenoSnap
         'btnICOptions
         '
         Me.btnICOptions.Font = New System.Drawing.Font("Microsoft Sans Serif", 6.0!)
-        Me.btnICOptions.Location = New System.Drawing.Point(226, 21)
+        Me.btnICOptions.Location = New System.Drawing.Point(301, 26)
         Me.btnICOptions.Margin = New System.Windows.Forms.Padding(0)
         Me.btnICOptions.Name = "btnICOptions"
-        Me.btnICOptions.Size = New System.Drawing.Size(72, 31)
+        Me.btnICOptions.Size = New System.Drawing.Size(96, 38)
         Me.btnICOptions.TabIndex = 70
         Me.btnICOptions.Text = "btnICOptions"
         Me.btnICOptions.UseVisualStyleBackColor = True
@@ -765,9 +753,10 @@ Partial Class frmPhenoSnap
         'lblICLocation
         '
         Me.lblICLocation.AutoSize = True
-        Me.lblICLocation.Location = New System.Drawing.Point(273, 222)
+        Me.lblICLocation.Location = New System.Drawing.Point(364, 273)
+        Me.lblICLocation.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblICLocation.Name = "lblICLocation"
-        Me.lblICLocation.Size = New System.Drawing.Size(39, 13)
+        Me.lblICLocation.Size = New System.Drawing.Size(51, 17)
         Me.lblICLocation.TabIndex = 69
         Me.lblICLocation.Text = "Label7"
         '
@@ -776,10 +765,10 @@ Partial Class frmPhenoSnap
         Me.txtCountDownTimeSecs.AcceptsReturn = True
         Me.txtCountDownTimeSecs.Cursor = System.Windows.Forms.Cursors.Default
         Me.txtCountDownTimeSecs.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCountDownTimeSecs.Location = New System.Drawing.Point(377, 156)
-        Me.txtCountDownTimeSecs.Margin = New System.Windows.Forms.Padding(2)
+        Me.txtCountDownTimeSecs.Location = New System.Drawing.Point(503, 192)
+        Me.txtCountDownTimeSecs.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtCountDownTimeSecs.Name = "txtCountDownTimeSecs"
-        Me.txtCountDownTimeSecs.Size = New System.Drawing.Size(53, 26)
+        Me.txtCountDownTimeSecs.Size = New System.Drawing.Size(69, 31)
         Me.txtCountDownTimeSecs.TabIndex = 62
         Me.txtCountDownTimeSecs.Text = "5"
         Me.txtCountDownTimeSecs.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
@@ -790,47 +779,40 @@ Partial Class frmPhenoSnap
         Me.Label8.AutoSize = True
         Me.Label8.BackColor = System.Drawing.SystemColors.Control
         Me.Label8.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.Location = New System.Drawing.Point(224, 158)
-        Me.Label8.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label8.Location = New System.Drawing.Point(299, 194)
         Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(156, 22)
+        Me.Label8.Size = New System.Drawing.Size(196, 26)
         Me.Label8.TabIndex = 63
         Me.Label8.Text = "Capture Delay (sec):"
-        '
-        'VideoSourcePlayer1
-        '
-        Me.VideoSourcePlayer1.Location = New System.Drawing.Point(639, 18)
-        Me.VideoSourcePlayer1.Name = "VideoSourcePlayer1"
-        Me.VideoSourcePlayer1.Size = New System.Drawing.Size(200, 126)
-        Me.VideoSourcePlayer1.TabIndex = 64
-        Me.VideoSourcePlayer1.Text = "VideoSourcePlayer1"
-        Me.VideoSourcePlayer1.VideoSource = Nothing
         '
         'cmbVideoModes
         '
         Me.cmbVideoModes.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.0!)
         Me.cmbVideoModes.FormattingEnabled = True
-        Me.cmbVideoModes.Location = New System.Drawing.Point(96, 33)
+        Me.cmbVideoModes.Location = New System.Drawing.Point(128, 41)
+        Me.cmbVideoModes.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbVideoModes.Name = "cmbVideoModes"
-        Me.cmbVideoModes.Size = New System.Drawing.Size(209, 26)
+        Me.cmbVideoModes.Size = New System.Drawing.Size(277, 30)
         Me.cmbVideoModes.TabIndex = 65
         '
         'cmbVideoSource
         '
         Me.cmbVideoSource.Font = New System.Drawing.Font("Microsoft Sans Serif", 11.0!)
         Me.cmbVideoSource.FormattingEnabled = True
-        Me.cmbVideoSource.Location = New System.Drawing.Point(96, 2)
+        Me.cmbVideoSource.Location = New System.Drawing.Point(128, 2)
+        Me.cmbVideoSource.Margin = New System.Windows.Forms.Padding(4)
         Me.cmbVideoSource.Name = "cmbVideoSource"
-        Me.cmbVideoSource.Size = New System.Drawing.Size(210, 26)
+        Me.cmbVideoSource.Size = New System.Drawing.Size(279, 30)
         Me.cmbVideoSource.TabIndex = 66
         '
         'pctImageLiveImage
         '
+        Me.pctImageLiveImage.BackColor = System.Drawing.Color.Black
         Me.pctImageLiveImage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pctImageLiveImage.Location = New System.Drawing.Point(635, 6)
-        Me.pctImageLiveImage.Margin = New System.Windows.Forms.Padding(2)
+        Me.pctImageLiveImage.Location = New System.Drawing.Point(847, 7)
+        Me.pctImageLiveImage.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.pctImageLiveImage.Name = "pctImageLiveImage"
-        Me.pctImageLiveImage.Size = New System.Drawing.Size(496, 333)
+        Me.pctImageLiveImage.Size = New System.Drawing.Size(660, 409)
         Me.pctImageLiveImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
         Me.pctImageLiveImage.TabIndex = 2
         Me.pctImageLiveImage.TabStop = False
@@ -838,10 +820,10 @@ Partial Class frmPhenoSnap
         'btnReloadWebcam
         '
         Me.btnReloadWebcam.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnReloadWebcam.Location = New System.Drawing.Point(313, 0)
+        Me.btnReloadWebcam.Location = New System.Drawing.Point(417, 0)
         Me.btnReloadWebcam.Margin = New System.Windows.Forms.Padding(0)
         Me.btnReloadWebcam.Name = "btnReloadWebcam"
-        Me.btnReloadWebcam.Size = New System.Drawing.Size(180, 31)
+        Me.btnReloadWebcam.Size = New System.Drawing.Size(240, 38)
         Me.btnReloadWebcam.TabIndex = 73
         Me.btnReloadWebcam.Text = "Reload webcams"
         Me.btnReloadWebcam.UseVisualStyleBackColor = True
@@ -849,21 +831,21 @@ Partial Class frmPhenoSnap
         'trkFocus
         '
         Me.trkFocus.AutoSize = False
-        Me.trkFocus.Location = New System.Drawing.Point(88, 63)
+        Me.trkFocus.Location = New System.Drawing.Point(117, 78)
         Me.trkFocus.Margin = New System.Windows.Forms.Padding(0)
         Me.trkFocus.Maximum = 255
         Me.trkFocus.Name = "trkFocus"
-        Me.trkFocus.Size = New System.Drawing.Size(350, 25)
+        Me.trkFocus.Size = New System.Drawing.Size(467, 31)
         Me.trkFocus.TabIndex = 74
+        Me.trkFocus.Value = 100
         '
         'lblFocus
         '
         Me.lblFocus.BackColor = System.Drawing.Color.White
         Me.lblFocus.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!)
-        Me.lblFocus.Location = New System.Drawing.Point(440, 68)
-        Me.lblFocus.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblFocus.Location = New System.Drawing.Point(587, 84)
         Me.lblFocus.Name = "lblFocus"
-        Me.lblFocus.Size = New System.Drawing.Size(44, 28)
+        Me.lblFocus.Size = New System.Drawing.Size(59, 34)
         Me.lblFocus.TabIndex = 77
         Me.lblFocus.Text = "100"
         Me.lblFocus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -872,10 +854,9 @@ Partial Class frmPhenoSnap
         '
         Me.lblWebCamFocus.AutoSize = True
         Me.lblWebCamFocus.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblWebCamFocus.Location = New System.Drawing.Point(12, 64)
-        Me.lblWebCamFocus.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblWebCamFocus.Location = New System.Drawing.Point(16, 79)
         Me.lblWebCamFocus.Name = "lblWebCamFocus"
-        Me.lblWebCamFocus.Size = New System.Drawing.Size(83, 22)
+        Me.lblWebCamFocus.Size = New System.Drawing.Size(105, 26)
         Me.lblWebCamFocus.TabIndex = 78
         Me.lblWebCamFocus.Text = "Set Focus:"
         Me.lblWebCamFocus.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -885,10 +866,9 @@ Partial Class frmPhenoSnap
         Me.lblWebCamResolution.AutoSize = True
         Me.lblWebCamResolution.BackColor = System.Drawing.SystemColors.Control
         Me.lblWebCamResolution.Font = New System.Drawing.Font("Trebuchet MS", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblWebCamResolution.Location = New System.Drawing.Point(7, 35)
-        Me.lblWebCamResolution.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.lblWebCamResolution.Location = New System.Drawing.Point(9, 43)
         Me.lblWebCamResolution.Name = "lblWebCamResolution"
-        Me.lblWebCamResolution.Size = New System.Drawing.Size(88, 22)
+        Me.lblWebCamResolution.Size = New System.Drawing.Size(113, 26)
         Me.lblWebCamResolution.TabIndex = 79
         Me.lblWebCamResolution.Text = "Resolution:"
         Me.lblWebCamResolution.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -903,37 +883,100 @@ Partial Class frmPhenoSnap
         Me.pnlWebCamControls.Controls.Add(Me.cmbVideoModes)
         Me.pnlWebCamControls.Controls.Add(Me.btnReloadWebcam)
         Me.pnlWebCamControls.Controls.Add(Me.trkFocus)
-        Me.pnlWebCamControls.Location = New System.Drawing.Point(15, 195)
+        Me.pnlWebCamControls.Location = New System.Drawing.Point(20, 240)
+        Me.pnlWebCamControls.Margin = New System.Windows.Forms.Padding(4)
         Me.pnlWebCamControls.Name = "pnlWebCamControls"
-        Me.pnlWebCamControls.Size = New System.Drawing.Size(497, 103)
+        Me.pnlWebCamControls.Size = New System.Drawing.Size(663, 127)
         Me.pnlWebCamControls.TabIndex = 80
         '
         'chkBeepOnCapture
         '
         Me.chkBeepOnCapture.AutoSize = True
         Me.chkBeepOnCapture.Font = New System.Drawing.Font("Trebuchet MS", 12.0!)
-        Me.chkBeepOnCapture.Location = New System.Drawing.Point(436, 156)
+        Me.chkBeepOnCapture.Location = New System.Drawing.Point(581, 192)
+        Me.chkBeepOnCapture.Margin = New System.Windows.Forms.Padding(4)
         Me.chkBeepOnCapture.Name = "chkBeepOnCapture"
-        Me.chkBeepOnCapture.Size = New System.Drawing.Size(65, 26)
+        Me.chkBeepOnCapture.Size = New System.Drawing.Size(78, 30)
         Me.chkBeepOnCapture.TabIndex = 81
         Me.chkBeepOnCapture.Text = "Beep"
         Me.chkBeepOnCapture.UseVisualStyleBackColor = True
         '
-        'tmrSetVideoSize
+        'tmrStartWebcam
         '
-        Me.tmrSetVideoSize.Interval = 1000
+        Me.tmrStartWebcam.Interval = 1000
+        '
+        'chkMultiLeaf
+        '
+        Me.chkMultiLeaf.AutoSize = True
+        Me.chkMultiLeaf.Checked = True
+        Me.chkMultiLeaf.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.chkMultiLeaf.Font = New System.Drawing.Font("Trebuchet MS", 12.0!)
+        Me.chkMultiLeaf.Location = New System.Drawing.Point(14, 7)
+        Me.chkMultiLeaf.Margin = New System.Windows.Forms.Padding(4)
+        Me.chkMultiLeaf.Name = "chkMultiLeaf"
+        Me.chkMultiLeaf.Size = New System.Drawing.Size(119, 30)
+        Me.chkMultiLeaf.TabIndex = 82
+        Me.chkMultiLeaf.Text = "MultiLeaf"
+        Me.chkMultiLeaf.UseVisualStyleBackColor = True
+        '
+        'txtCurLeafNum
+        '
+        Me.txtCurLeafNum.AcceptsReturn = True
+        Me.txtCurLeafNum.Font = New System.Drawing.Font("Trebuchet MS", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtCurLeafNum.Location = New System.Drawing.Point(40, 37)
+        Me.txtCurLeafNum.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.txtCurLeafNum.Name = "txtCurLeafNum"
+        Me.txtCurLeafNum.Size = New System.Drawing.Size(66, 42)
+        Me.txtCurLeafNum.TabIndex = 83
+        Me.txtCurLeafNum.Text = "1"
+        Me.txtCurLeafNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Center
+        '
+        'lblCurleafnum
+        '
+        Me.lblCurleafnum.AutoEllipsis = True
+        Me.lblCurleafnum.BackColor = System.Drawing.SystemColors.Control
+        Me.lblCurleafnum.Font = New System.Drawing.Font("Trebuchet MS", 10.0!)
+        Me.lblCurleafnum.Location = New System.Drawing.Point(32, 77)
+        Me.lblCurleafnum.Name = "lblCurleafnum"
+        Me.lblCurleafnum.Size = New System.Drawing.Size(82, 53)
+        Me.lblCurleafnum.TabIndex = 84
+        Me.lblCurleafnum.Text = "Leaf Number"
+        Me.lblCurleafnum.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        '
+        'VideoSourcePlayer1
+        '
+        Me.VideoSourcePlayer1.Location = New System.Drawing.Point(865, 26)
+        Me.VideoSourcePlayer1.Margin = New System.Windows.Forms.Padding(4)
+        Me.VideoSourcePlayer1.Name = "VideoSourcePlayer1"
+        Me.VideoSourcePlayer1.Size = New System.Drawing.Size(429, 298)
+        Me.VideoSourcePlayer1.TabIndex = 64
+        Me.VideoSourcePlayer1.Text = "VideoSourcePlayer1"
+        Me.VideoSourcePlayer1.VideoSource = Nothing
+        Me.VideoSourcePlayer1.Visible = False
+        '
+        'Panel2
+        '
+        Me.Panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.Panel2.Controls.Add(Me.txtCurLeafNum)
+        Me.Panel2.Controls.Add(Me.chkMultiLeaf)
+        Me.Panel2.Controls.Add(Me.lblCurleafnum)
+        Me.Panel2.Location = New System.Drawing.Point(691, 233)
+        Me.Panel2.Name = "Panel2"
+        Me.Panel2.Size = New System.Drawing.Size(144, 133)
+        Me.Panel2.TabIndex = 85
         '
         'frmPhenoSnap
         '
-        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1142, 554)
+        Me.ClientSize = New System.Drawing.Size(1523, 682)
+        Me.Controls.Add(Me.Panel2)
+        Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.pnlWebCamControls)
         Me.Controls.Add(Me.VideoSourcePlayer1)
         Me.Controls.Add(Me.pctImageLiveImage)
         Me.Controls.Add(Me.txtCountDownTimeSecs)
-        Me.Controls.Add(Me.Panel1)
         Me.Controls.Add(Me.Label5)
         Me.Controls.Add(Me.pctCam1LastImage)
         Me.Controls.Add(Me.lblCamType)
@@ -966,7 +1009,7 @@ Partial Class frmPhenoSnap
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.chkBeepOnCapture)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.Margin = New System.Windows.Forms.Padding(2)
+        Me.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Name = "frmPhenoSnap"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "PhenoSnap"
@@ -982,6 +1025,8 @@ Partial Class frmPhenoSnap
         CType(Me.trkFocus, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlWebCamControls.ResumeLayout(False)
         Me.pnlWebCamControls.PerformLayout()
+        Me.Panel2.ResumeLayout(False)
+        Me.Panel2.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1061,6 +1106,10 @@ Partial Class frmPhenoSnap
     Friend WithEvents pnlWebCamControls As System.Windows.Forms.Panel
     Friend WithEvents chkBeepOnCapture As System.Windows.Forms.CheckBox
     Friend WithEvents VideoSourcePlayer1 As AForge.Controls.VideoSourcePlayer
-    Friend WithEvents tmrSetVideoSize As System.Windows.Forms.Timer
+    Friend WithEvents tmrStartWebcam As System.Windows.Forms.Timer
+    Friend WithEvents chkMultiLeaf As System.Windows.Forms.CheckBox
+    Friend WithEvents txtCurLeafNum As System.Windows.Forms.TextBox
+    Friend WithEvents lblCurleafnum As System.Windows.Forms.Label
+    Friend WithEvents Panel2 As System.Windows.Forms.Panel
 
 End Class

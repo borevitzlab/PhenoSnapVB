@@ -1,9 +1,7 @@
-﻿'TODO
-'* Cut cover the size of box
-'* Get color checker code working
-'* Add Timer box
-'* Get better lighting
-'* Other cross calibration methods (scanning leaf with color checker, etc)
+﻿''NOTE: If camera starts to fail to load and only shows "Connecting..." redownload the DLL's from aforge and replace the 
+''      existing dll's with the same versions from the clean install dll's from here:
+'        "C:\Program Files (x86)\AForge.NET\Framework\Samples\Video\Snapshot Maker\bin\Debug" (or a simlar path. all dll's may not be needed)
+'' --> NOTE that "AForge.Imaging.dll" is a reaquired dependency but isn't listed as part of aforge requirements
 
 Imports AForge.Controls
 Imports AForge.Video
@@ -70,6 +68,9 @@ Public Class frmPhenoSnap
     Friend fullSavePath(2) As String
     Friend rootTempSavePath As String
     Friend rootTempFullSavePath(2) As String
+
+    Friend curLeafNum As Integer = 1
+    Friend lastPlantID As String = "" 'Holds last plant scanned for tracking multiple leaf scans from same plan
 
     'Friend curPlantID As String 'Holds plant id from barcode (Is String in case barcode is alphanumeric)
 
@@ -207,6 +208,8 @@ Public Class frmPhenoSnap
     Private Const WM_CAP_DLG_VIDEOFORMAT As Integer = WM_USER + 41
     Private Const WM_CAP_DLG_VIDEODISPLAY = WM_USER + 43
 
+    Dim zoomOn As Boolean = False 'Toggle zoome of live webcam image
+
     '' [TB NOTE] - moved the dll and interop code to just above the capture code for ease of debugging
 
     Dim formLoaded As Boolean = False 'Prevent form events from firing until form is loaded
@@ -233,7 +236,6 @@ Public Class frmPhenoSnap
 #End Region
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
         If DO_QR = False Then
             pnlQRCodes.Visible = False
             GetDPI() 'Required for printing
@@ -266,13 +268,17 @@ Public Class frmPhenoSnap
 
         ImportData()
 
-        formLoaded = True
+        'This has been moved until the StartWebcam timer ticks
+        '  formLoaded = True
 
-        tmrSetVideoSize.Enabled = True
+        tmrStartWebcam.Enabled = True
+
+        Me.CenterToScreen()
 
 
-
+        Me.Width = 1158
     End Sub
+
     Private Sub Form1_Closing(sender As Object, e As EventArgs) Handles MyBase.FormClosing
         updateSettings()
         saveConfig(appDataPath)
@@ -284,6 +290,7 @@ Public Class frmPhenoSnap
         rootSavePath = IO.Path.Combine(txtFileSavePath.Text & txtExpID.Text)
 
         lblCurBarcode.Text = curPlant.plantID
+
 
         config.secondCam = chkUseCam2.Checked
 
@@ -340,6 +347,9 @@ Public Class frmPhenoSnap
     End Sub
     Private Function GetImageNamePath(expID) As String
 
+        'This is where the image name is set for capture
+        ' Currently this manually determined in code here, per experiment ID
+
         Select Case expID
             Case "BVZ0038"
                 ''For BVZ0038 - Wheat trial dual camera:
@@ -352,6 +362,35 @@ Public Class frmPhenoSnap
                 ''For BVZ0047 - Euc LeafScan with webcam:
                 ' imName01 = curPlant.expID & "-" & "P" & curPlant.plantNumber & "-" & "L" & sPad(curPlant.leafID, 3) & "-" & curPlant.accessionID
                 imName01 = curPlant.expID & "-" & curPlant.plantID & "-" & curPlant.accessionID
+
+                'When multileaf scanning is implemented. Filename is incremented with "-L##" of leafnum.
+                ' If user puts an existing leafnum into the leafnum bux then that value will be overwritten (and each subsequent one)
+                ' When a new plant is scanned, leafnum resets to 1
+                ' If user scans an existing leaf, the program expects the next leaf in the line, not the final one (i.e. if user
+                '   is at leaf 4 and resets to 2, then 3 and 4 will be scanned again as well).
+                '  ***This may not be the desired outcome!
+
+                If chkMultiLeaf.Checked = True Then
+
+                    'Check if we scanned this plant already and if not, reset leafnum count else increment
+                    If lastPlantID <> curPlant.plantID Then
+                        txtCurLeafNum.Text = 1
+                        lastPlantID = curPlant.plantID
+                    End If
+
+                    Try
+
+                    Catch ex As Exception
+                        Beep()
+                        MsgBox("Couldn't increment leaf count, make sure there are only numbers in the ""CurrentLeafNum"" box", VB.vbOKOnly)
+                    End Try
+
+                    imName01 = imName01 & "-L" & sPad(curLeafNum, 2)
+                    txtCurLeafNum.Text = txtCurLeafNum.Text + 1
+
+
+                End If
+
                 'EXPD-PlantID-Acess-Condition-PotNum-TopORSide
 
             Case "BVZ0042"
@@ -928,10 +967,13 @@ Public Class frmPhenoSnap
                         '   If vidSize > 0 Then cmbVideoModes.SelectedIndex = vidSize
                     Case "gCamFocus"
                         gCamFocus = currentData(1)
+                        trkFocus.Value = gCamFocus
                     Case "bCamAutoFocus"
                         bCamAutoFocus = currentData(1)
                     Case "bBeepOnCapture"
                         chkBeepOnCapture.Checked = currentData(1)
+                    Case "chkMultiLeaf"
+                        chkMultiLeaf.Checked = currentData(1)
 
                 End Select
 
@@ -983,6 +1025,7 @@ Public Class frmPhenoSnap
             A.writeline("gCamFocus =" & gCamFocus) 'Current camera focus setting
             A.writeline("bCamAutoFocus =" & bCamAutoFocus) 'Current camera focus setting
             A.writeline("bBeepOnCapture =" & bBeepOnCapture) 'does program beep before and after capture (annoying if capture is instant, needed if capture is delayed')
+            A.writeline("chkMultiLeaf =" & chkMultiLeaf.Checked) 'Multi leaf capture enabled
 
             A.Close()
         Catch ex As Exception
@@ -1136,11 +1179,501 @@ Public Class frmPhenoSnap
 
 #End Region 'Printing
 
+
+
+
+
+    ' Private Sub lst1_SelectedIndexChanged(sender As Object, e As EventArgs)
+    '     txtOutput.Text = lstWebCamSelect.SelectedItem
+    '  End Sub
+
+#Region "Webcam Code"
+
+    '' ''<System.Runtime.InteropServices.DllImport("user32.dll", SetLastError:=True)> Private Shared Function SendMessage(ByVal hWnd As IntPtr, ByVal Msg As Integer, ByVal wParam As Integer, ByVal lParam As String) As IntPtr
+    '' ''End Function
+
+    ''<System.Runtime.InteropServices.DllImport("avicap32.dll", SetLastError:=True)> Private Shared Function capCreateCaptureWindowA(ByVal lpszWindowName As String, ByVal dwStyle As Integer, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Integer, ByVal hWndParent As IntPtr, ByVal nID As Integer) As IntPtr
+    ''End Function
+
+    '' ''<System.Runtime.InteropServices.DllImport("user32.dll", SetLastError:=True)> Private Shared Function DestroyWindow(ByVal hwnd As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
+    '' ''End Function
+
+    ''Declare Function capGetDriverDescriptionA Lib "avicap32.dll" (ByVal wDriverIndex As Short, ByVal lpszName As String, ByVal cbName As Integer, ByVal lpszVer As String, ByVal cbVer As Integer) As Boolean
+
+    ''Declare Function capCreateCaptureWindowA Lib "avicap32.dll" (ByVal lpszWindowName As String, ByVal dwStyle As Integer, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Short, ByVal hWnd As Integer, ByVal nID As Integer) As Integer
+
+    ''Declare Function capGetDriverDescriptionA Lib "avicap32.dll" (ByVal wDriverIndex As Short, ByVal lpszName As String, ByVal cbName As Integer, ByVal lpszVer As String, ByVal cbVer As Integer) As Boolean
+
+    ''Declare Function capCreateCaptureWindowA Lib "avicap32.dll" (ByVal lpszWindowName As String, ByVal dwStyle As Integer, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Short, ByVal hWnd As Integer, ByVal nID As Integer) As Integer
+
+    '' '''[TIM TEMP] Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Integer, ByVal Msg As Integer, ByVal wParam As Integer, <MarshalAs(UnmanagedType.AsAny)> ByVal lParam As Object) As Integer
+
+    ''Declare Function SetWindowPos Lib "user32" Alias "SetWindowPos" (ByVal hwnd As Integer, ByVal hWndInsertAfter As Integer, ByVal x As Integer, ByVal y As Integer, ByVal cx As Integer, ByVal cy As Integer, ByVal wFlags As Integer) As Integer
+
+    ''Declare Function DestroyWindow Lib "user32" (ByVal hndw As Integer) As Boolean
+
+
+
+    ''Private DriverVersion As Integer
+
+
+
+    ''Private Function ReturnDriver() As Integer
+    ''    Dim DriverName As String = Space(100)
+    ''    Dim DriverVersion As String = Space(100)
+    ''    Dim DriverIndex As Integer = Nothing
+    ''    For i As Integer = 0 To 9
+    ''        If capGetDriverDescriptionA(i, DriverName, 80, DriverVersion, 80) Then
+    ''            DriverIndex = i
+    ''            Exit For
+    ''        End If
+    ''    Next
+    ''    Return DriverIndex
+    ''End Function
+
+
+
+
+    ''Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+    ''    Dim data As IDataObject
+    ''    Dim bmap As Image
+
+    ''    '
+    ''    ' Copy image to clipboard
+    ''    Try
+
+
+    ''        '
+    ''        SendMessage(hHwnd, WM_CAP_EDIT_COPY, 0, 0)
+
+    ''        '
+    ''        ' Get image from clipboard and convert it to a bitmap
+    ''        '
+    ''        data = Clipboard.GetDataObject()
+
+    ''        If data.GetDataPresent(GetType(System.Drawing.Bitmap)) Then
+    ''            bmap = CType(data.GetData(GetType(System.Drawing.Bitmap)), Image)
+    ''            Dim gr As Graphics = Graphics.FromImage(bmap)
+    ''            gr.DrawLine(Pens.Red, 0, 0, 50, 50)
+    ''            ClosePreviewWindow()
+
+    ''            pctImage2.Image = bmap
+    ''            pctImage2.Refresh()
+    ''            '                pctImage2.Image = bmap.Clone
+    ''            pctImage2.Image.Save("C:\test2.bmp", System.Drawing.Imaging.ImageFormat.Bmp)
+    ''        End If
+
+    ''        bmap = Nothing
+    ''    Catch ex As Exception
+    ''        Beep()
+
+    ''    End Try
+    ''End Sub
+
+    '' Goes in form load
+    ' ''    cWnd = capCreateCaptureWindowA(devId.ToString, WS_VISIBLE Or WS_CHILD, 0, 0, PictureBox1.Width, PictureBox1.Height, PictureBox1.Handle, 0)
+    ' ''If Not SendMessage(cWnd, WM_CAP_DRIVER_CONNECT, devId, Nothing) = IntPtr.Zero Then
+    ' ''    SendMessage(cWnd, WM_CAP_SET_SCALE, 1, Nothing)
+    ' ''    SendMessage(cWnd, WM_CAP_SET_PREVIEWRATE, 66, Nothing)
+    ' ''    SendMessage(cWnd, WM_CAP_SET_PREVIEW, 1, Nothing)
+    ' ''Else
+    ' ''    MessageBox.Show("Error connecting to capture device. Make sure your WebCam is connected and try again.")
+    ' ''    cWnd = IntPtr.Zero
+    ' ''    Me.Close()
+    ' ''End If
+
+    Private Sub Form1_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+        gQuitSleep = True 'make sure sleep loop actually quits
+        'kill webcam
+        WebCamStopVideo()
+
+        If Not cWnd.Equals(IntPtr.Zero) Then
+            SendMessage(cWnd, WM_CAP_DRIVER_DISCONNECT, devId, Nothing)
+
+            DestroyWindow(cWnd)
+        End If
+        If System.IO.File.Exists(tmppic) Then System.IO.File.Delete(tmppic)
+    End Sub
+
+    Private Sub ZoomVideo()
+        Try
+            Dim temp() As String = Split(cmbVideoModes.Text)
+            VideoSourcePlayer1.Width = temp(0)
+            VideoSourcePlayer1.Height = temp(1)
+            Application.DoEvents()
+        Catch ex As Exception
+            zoomOn = False
+            ResetCamVideoBoxSize()
+            Application.DoEvents()
+        End Try
+
+    End Sub
+
+    Private Sub ResetCamVideoBoxSize()
+        VideoSourcePlayer1.Width = pctImageLiveImage.Width
+        VideoSourcePlayer1.Height = pctImageLiveImage.Height
+
+
+    End Sub
+
+    Private Sub ComboBox2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbCam1CamType.SelectedIndexChanged
+        If Not formLoaded Then Exit Sub
+        UpdateCamType()
+    End Sub
+    Private Sub UpdateCamType()
+        If cmbCam1CamType.Text = "WebCam" Then
+            Try
+                VideoSourcePlayer1.Visible = True
+                VideoSourcePlayer1.Top = pctImageLiveImage.Top
+                VideoSourcePlayer1.Width = pctImageLiveImage.Width
+                VideoSourcePlayer1.Left = pctImageLiveImage.Left
+                VideoSourcePlayer1.Height = pctImageLiveImage.Height
+                pctImageLiveImage.Visible = False
+                lblWebCam1Info.Visible = True
+                '   lstWebCamSelect.Visible = True
+                EnumerateVideoDevices()
+                cmbVideoModes.SelectedIndex = (cmbVideoModes.Items.Count - 1)
+                WebCamStartVideo()
+                pnlWebCamControls.Visible = True
+                pnlWebCamControls.Top = txtURL1.Top
+
+            Catch ex As Exception
+                Beep()
+                txtOutput.Text = (ex.Message)
+
+            End Try
+        Else
+            WebCamStopVideo()
+            lblWebCam1Info.Visible = False
+            ' lstWebCamSelect.Visible = False
+            pctImageLiveImage.Visible = True
+            VideoSourcePlayer1.Visible = False
+            pnlWebCamControls.Visible = False
+
+        End If
+        updateSettings()
+    End Sub
+    Private Function WebCamTakePicture()
+        Dim sFileName As String
+        Dim appPath As String = My.Application.Info.DirectoryPath
+        Try
+            '     VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(cmbVideoModes.SelectedIndex) 'VideoCaptureDevice(VideoDevices(cmbVideoSource.SelectedIndex).MonikerString).
+
+        Catch ex As Exception
+
+        End Try
+        Try
+
+
+            '[TB NOTE' This method currently works but you have to run the app as administrator due to some weird permissions 
+            '              issues with copying the temp file out of the appdata/Loca/Temp/ folder
+
+            If VideoSourcePlayer1.IsRunning = True Then
+                If My.Settings.ICType = "PNG" Then
+                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(rootTempFullSavePath(1), System.Drawing.Imaging.ImageFormat.Png)
+                ElseIf My.Settings.ICType = "JPG" Then
+                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(rootTempFullSavePath(1), System.Drawing.Imaging.ImageFormat.Jpeg)
+                Else
+                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(rootTempFullSavePath(1), System.Drawing.Imaging.ImageFormat.Bmp)
+                End If
+                'Load image to viewer
+                pctCam1LastImage.Image = LoadAndCloneImage(rootTempFullSavePath(1), tempIm) ' Load temp image for viewing and saving
+            End If
+        Catch ex As Exception
+            Beep()
+            txtOutput.Text = ("Capture Failed." & vbCrLf & ex.Message & vbCrLf & vbCrLf & "Try taking snapshot again when video image is visible." & vbCrLf & "Temp file save path: " & rootTempFullSavePath(1))
+        End Try
+    End Function
+
+
+
+    Private WithEvents timer As New Timer
+    'Stores the file path, e.g.: "F:\Temp"
+    Friend Shared strICLocation As String = My.Settings.ICSet
+    'Stores the common name for the file, such as "Capture" (Screenshot, whatever you want)
+    Friend Shared strICFileRootName As String = My.Settings.ICRootName
+    'Stores the image format to save in a 3 char string: PNG, JPG, BMP
+    Friend Shared strICType As String = My.Settings.ICType
+
+    Dim VideoCaptureSource As VideoCaptureDevice
+    Dim VideoDevices As New FilterInfoCollection(FilterCategory.VideoInputDevice)
+    Private Property VideoCapabilities As VideoCapabilities()
+    Dim frame As System.Drawing.Bitmap
+    Dim filename As String
+
+    Private Sub Main_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        EnumerateVideoDevices()
+
+    End Sub
+
+    Private Sub EnumerateVideoDevices()
+        ' enumerate video devices
+        VideoDevices = New FilterInfoCollection(FilterCategory.VideoInputDevice)
+        Try
+            cmbVideoSource.Items.Clear()
+        Catch ex As Exception
+
+        End Try
+
+        If VideoDevices.Count <> 0 Then
+            ' add all devices to combo
+            For Each device As FilterInfo In VideoDevices
+                cmbVideoSource.Items.Add(device.Name)
+                cmbVideoSource.SelectedIndex = 0
+                VideoCaptureSource = New VideoCaptureDevice(VideoDevices(cmbVideoSource.SelectedIndex).MonikerString)
+                EnumerateVideoModes(VideoCaptureSource)
+            Next
+        Else
+            cmbVideoSource.Items.Add("No DirectShow devices found")
+        End If
+        cmbVideoSource.SelectedIndex = 0
+    End Sub
+
+    Private Sub EnumerateVideoModes(device As VideoCaptureDevice)
+        ' Exit Sub
+        ' get resolutions for selected video source
+        Me.Cursor = Cursors.WaitCursor
+        cmbVideoModes.Items.Clear()
+        Try
+            VideoCapabilities = device.VideoCapabilities
+            For i = 0 To VideoCapabilities.Count - 1
+                If Not cmbVideoModes.Items.Contains(VideoCapabilities(i).FrameSize) Then
+                    cmbVideoModes.Items.Add(VideoCapabilities(i).FrameSize)
+                End If
+            Next
+            If VideoCapabilities.Length = 0 Then
+                cmbVideoModes.Items.Add("Not supported")
+            End If
+            cmbVideoModes.SelectedIndex = 0
+        Finally
+            Me.Cursor = Cursors.[Default]
+        End Try
+    End Sub
+    Private Sub WebCamStartVideo()
+        Try
+
+            If cmbVideoSource.SelectedItem <> "No Video Devices" Then
+                If VideoSourcePlayer1.IsRunning = True Then
+                    VideoSourcePlayer1.SignalToStop()
+                    VideoSourcePlayer1.WaitForStop()
+                End If
+
+                VideoCaptureSource = New VideoCaptureDevice(VideoDevices(cmbVideoSource.SelectedIndex).MonikerString)
+                Try
+                    VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(cmbVideoModes.SelectedIndex)
+
+                    ' VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(18)
+                    '  Dim result1 As Boolean = VideoCaptureSource.SetCameraProperty(CameraControlProperty.Exposure, txtBrightness.Text, CameraControlFlags.Manual)
+                Catch ex As Exception
+                    Beep()
+                    txtOutput.Text = "Error loading webcam. Error message: " & ex.Message
+                End Try
+                Try
+                    ' VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(18) 'VideoCaptureDevice(VideoDevices(cmbVideoSource.SelectedIndex).MonikerString).
+                    ' Beep()
+                    '  VideoCaptureSource.VideoCapabilities(18).FrameSize()
+
+                Catch ex As Exception
+
+                End Try
+                VideoSourcePlayer1.VideoSource = VideoCaptureSource
+
+                VideoSourcePlayer1.Start()
+                ' SetCameraFocus(trkFocus.Value)
+
+            End If
+        Catch ex As Exception
+            Beep()
+            txtOutput.Text = (ex.Message)
+        End Try
+
+    End Sub
+
+    Private Sub WebCamStopVideo()
+        VideoSourcePlayer1.SignalToStop()
+        VideoSourcePlayer1.WaitForStop()
+        VideoDevices = Nothing
+        VideoCaptureSource = Nothing
+    End Sub
+
+
+    Private Sub SetWebcamResolution()
+        If VideoSourcePlayer1.IsRunning = True Then
+            Dim imSize() As String
+            Try
+                ' WebCamStopVideo()
+
+                If Not IsNothing(VideoCaptureSource) Then
+                    'Resolution is now set every time we restart the video
+                    ' VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(cmbVideoModes.SelectedIndex)
+                    WebCamStartVideo()
+                    imSize = Split(Replace(cmbVideoModes.Text, " ", ""), ",")
+
+                    camAspectRatio = GetCamAspectRatio(CInt(imSize(0)), CInt(imSize(1)))
+                    Try
+                        If IsNumeric(camAspectRatio) Then
+                            If camAspectRatio > 0 Then VideoSourcePlayer1.Height = VideoSourcePlayer1.Width / camAspectRatio
+                            Try
+                                Dim playerPos As Integer = (pctImageLiveImage.Height - VideoSourcePlayer1.Height) / 2
+                                VideoSourcePlayer1.Top = pctImageLiveImage.Top + playerPos
+                                ''Enable this to put black bars on top and bottom of video player when in 16:9 aspect
+                                '   pctImageLiveImage.Left = VideoSourcePlayer1.Left - 2
+                                '   pctImageLiveImage.Width = VideoSourcePlayer1.Width + 5
+                                '   pctImageLiveImage.Visible = True
+                                Beep()
+                            Catch ex As Exception
+                                Beep()
+                            End Try
+
+
+                        End If
+
+                    Catch ex As Exception
+
+                    End Try
+                End If
+            Catch ex As Exception
+                Beep()
+
+            End Try
+            '  VideoCaptureDevice()
+        End If
+    End Sub
+    Private Function GetCamAspectRatio(width, height) As Double
+        Dim camAspectRatio As Long = Math.Round((width / height) * 10)
+        Select Case camAspectRatio
+            Case Is = 43
+                Return FOURTHREE
+            Case 13
+                Return THREETWO
+            Case 18
+                Return SIXTEENNINE
+
+            Case 1
+                Return 1
+        End Select
+
+
+    End Function
+
+
+    Private Sub SetCameraFocus(Optional current As Integer = 50)
+        Dim min As Integer = 0
+        Dim max As Integer = 0
+
+        If formLoaded Then
+
+            Try
+                Dim result3 As Boolean = VideoCaptureSource.GetCameraPropertyRange(CameraControlProperty.Focus, min, max, 1, 100, CameraControlFlags.Manual)
+
+                Dim result2 As Boolean = VideoCaptureSource.SetCameraProperty(CameraControlProperty.Focus, trkFocus.Value, CameraControlFlags.Manual)
+
+                txtOutput.Text = min & "|" & max & "|" & current
+                lblFocus.Text = current
+            Catch ex As Exception
+                Beep()
+                txtOutput.Text = "Error settings focus. Error message: " & vbCrLf & ex.Message
+            End Try
+        End If
+
+    End Sub
+
+    Private Sub tmrStartWebcam_Tick(sender As Object, e As EventArgs) Handles tmrStartWebcam.Tick
+        ' To prevent the webcam restarting a bunch of times on load, we wait until a few seconds after the form has loaded to actually start it
+        '     Wait for for the webcam to load and then try to set the video size 
+        Application.DoEvents()
+        UpdateCamType() 'This sets the camera type and starts the webcam video if needed
+
+        Try
+            If cmbCam1CamType.Text = "WebCam" Then
+                If VideoSourcePlayer1.VideoSource.IsRunning Then
+                    Dim vidSizeIndex = cmbVideoModes.FindStringExact(gWebCamVideoSize)
+                    If vidSizeIndex > 0 Then cmbVideoModes.SelectedIndex = vidSizeIndex
+                    'Have make form loaded here so setfocus works:
+                    formLoaded = True
+                    frmPhenoSnap.Sleep(1500)
+                    SetWebcamResolution()
+                    frmPhenoSnap.Sleep(1500)
+                    SetCameraFocus(trkFocus.Value)
+                    tmrStartWebcam.Enabled = False
+                Else
+                    gSetSizeTimer = gSetSizeTimer + 1
+                End If
+            End If
+
+            If gSetSizeTimer > 10 Then Exit Sub 'Quit after five seconds of trying
+
+        Catch ex As Exception
+            tmrStartWebcam.Enabled = False
+            formLoaded = True
+
+        End Try
+        formLoaded = True
+        frmChecklist.Visible = True
+
+    End Sub
+
+#End Region
+
+
+
+#Region "IC (Image Capture)"
+
+
+    Private Sub btnICSet_Click(sender As Object, e As EventArgs) Handles btnICSet.Click
+        'Make a button called btnICSet to set the save path
+        Dim dialog As New FolderBrowserDialog()
+        dialog.Description = "Select Image Capture save path"
+        If dialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
+            strICLocation = dialog.SelectedPath
+            lblICLocation.Text = strICLocation
+        End If
+    End Sub
+
+    Private Sub ICCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnICCapture.Click
+        'Need a button called btnICCapture.  This is what will initiate the screen cap.
+        Dim strFilename As String = strICFileRootName & " " & Format(Now, "yyyy-MMM-dd HH.mm.ss.fff") & "." & My.Settings.ICType
+        Try
+            txtOutput.Text = strFilename
+            If VideoSourcePlayer1.IsRunning = True Then
+                If My.Settings.ICType = "PNG" Then
+                    filename = filename & ".png"
+                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(strFilename, System.Drawing.Imaging.ImageFormat.Png)
+                ElseIf My.Settings.ICType = "JPG" Then
+                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(strFilename, System.Drawing.Imaging.ImageFormat.Jpeg)
+                Else
+                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(strFilename, System.Drawing.Imaging.ImageFormat.Bmp)
+                End If
+            End If
+        Catch ex As Exception
+            MessageBox.Show(strFilename & vbCrLf & "Try taking snapshot again when video image is visible.", "Cannot Save Image", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+#End Region
+
+   
+
+    Private Sub trkFocus_Mousedown(sender As Object, e As EventArgs) Handles trkFocus.MouseDown
+        ZoomVideo()
+    End Sub
+    Private Sub trkFocus_MouseUp(sender As Object, e As EventArgs) Handles trkFocus.MouseUp
+        ResetCamVideoBoxSize()
+        GoToScanBox()
+    End Sub
+
+    Private Sub trkFocus_ValueChanges(sender As Object, e As EventArgs) Handles trkFocus.ValueChanged
+        gCamFocus = trkFocus.Value
+        SetCameraFocus(trkFocus.Value)
+    End Sub
+
+
+
 #Region "Buttons and clicks"
 
     'What we do when barcode has been entered and ENTER is hit:
     Private Sub txtPlantID_KeyDown(ByVal sender As Object, ByVal e As System.Windows.Forms.KeyEventArgs) Handles txtBarcodeValue.KeyDown
-        
+
         If e.KeyCode = Keys.Enter Then
             e.Handled = True
             e.SuppressKeyPress = True
@@ -1248,202 +1781,9 @@ Public Class frmPhenoSnap
         ImportData()
         GoToScanBox()
     End Sub
-
-#End Region
-
     Private Sub txtURL1_TextChanged(sender As Object, e As EventArgs) Handles txtURL1.TextChanged
 
     End Sub
-
-
-
-    ' Private Sub lst1_SelectedIndexChanged(sender As Object, e As EventArgs)
-    '     txtOutput.Text = lstWebCamSelect.SelectedItem
-    '  End Sub
-
-#Region "Webcam Code"
-
-    '' ''<System.Runtime.InteropServices.DllImport("user32.dll", SetLastError:=True)> Private Shared Function SendMessage(ByVal hWnd As IntPtr, ByVal Msg As Integer, ByVal wParam As Integer, ByVal lParam As String) As IntPtr
-    '' ''End Function
-
-    ''<System.Runtime.InteropServices.DllImport("avicap32.dll", SetLastError:=True)> Private Shared Function capCreateCaptureWindowA(ByVal lpszWindowName As String, ByVal dwStyle As Integer, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Integer, ByVal hWndParent As IntPtr, ByVal nID As Integer) As IntPtr
-    ''End Function
-
-    '' ''<System.Runtime.InteropServices.DllImport("user32.dll", SetLastError:=True)> Private Shared Function DestroyWindow(ByVal hwnd As IntPtr) As <MarshalAs(UnmanagedType.Bool)> Boolean
-    '' ''End Function
-
-    ''Declare Function capGetDriverDescriptionA Lib "avicap32.dll" (ByVal wDriverIndex As Short, ByVal lpszName As String, ByVal cbName As Integer, ByVal lpszVer As String, ByVal cbVer As Integer) As Boolean
-
-    ''Declare Function capCreateCaptureWindowA Lib "avicap32.dll" (ByVal lpszWindowName As String, ByVal dwStyle As Integer, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Short, ByVal hWnd As Integer, ByVal nID As Integer) As Integer
-
-    ''Declare Function capGetDriverDescriptionA Lib "avicap32.dll" (ByVal wDriverIndex As Short, ByVal lpszName As String, ByVal cbName As Integer, ByVal lpszVer As String, ByVal cbVer As Integer) As Boolean
-
-    ''Declare Function capCreateCaptureWindowA Lib "avicap32.dll" (ByVal lpszWindowName As String, ByVal dwStyle As Integer, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Short, ByVal hWnd As Integer, ByVal nID As Integer) As Integer
-
-    '' '''[TIM TEMP] Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Integer, ByVal Msg As Integer, ByVal wParam As Integer, <MarshalAs(UnmanagedType.AsAny)> ByVal lParam As Object) As Integer
-
-    ''Declare Function SetWindowPos Lib "user32" Alias "SetWindowPos" (ByVal hwnd As Integer, ByVal hWndInsertAfter As Integer, ByVal x As Integer, ByVal y As Integer, ByVal cx As Integer, ByVal cy As Integer, ByVal wFlags As Integer) As Integer
-
-    ''Declare Function DestroyWindow Lib "user32" (ByVal hndw As Integer) As Boolean
-
-
-
-    ''Private DriverVersion As Integer
-
-
-
-    ''Private Function ReturnDriver() As Integer
-    ''    Dim DriverName As String = Space(100)
-    ''    Dim DriverVersion As String = Space(100)
-    ''    Dim DriverIndex As Integer = Nothing
-    ''    For i As Integer = 0 To 9
-    ''        If capGetDriverDescriptionA(i, DriverName, 80, DriverVersion, 80) Then
-    ''            DriverIndex = i
-    ''            Exit For
-    ''        End If
-    ''    Next
-    ''    Return DriverIndex
-    ''End Function
-
-
-#End Region
-
-
-
-    ''Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-    ''    Dim data As IDataObject
-    ''    Dim bmap As Image
-
-    ''    '
-    ''    ' Copy image to clipboard
-    ''    Try
-
-
-    ''        '
-    ''        SendMessage(hHwnd, WM_CAP_EDIT_COPY, 0, 0)
-
-    ''        '
-    ''        ' Get image from clipboard and convert it to a bitmap
-    ''        '
-    ''        data = Clipboard.GetDataObject()
-
-    ''        If data.GetDataPresent(GetType(System.Drawing.Bitmap)) Then
-    ''            bmap = CType(data.GetData(GetType(System.Drawing.Bitmap)), Image)
-    ''            Dim gr As Graphics = Graphics.FromImage(bmap)
-    ''            gr.DrawLine(Pens.Red, 0, 0, 50, 50)
-    ''            ClosePreviewWindow()
-
-    ''            pctImage2.Image = bmap
-    ''            pctImage2.Refresh()
-    ''            '                pctImage2.Image = bmap.Clone
-    ''            pctImage2.Image.Save("C:\test2.bmp", System.Drawing.Imaging.ImageFormat.Bmp)
-    ''        End If
-
-    ''        bmap = Nothing
-    ''    Catch ex As Exception
-    ''        Beep()
-
-    ''    End Try
-    ''End Sub
-
-    '' Goes in form load
-    ' ''    cWnd = capCreateCaptureWindowA(devId.ToString, WS_VISIBLE Or WS_CHILD, 0, 0, PictureBox1.Width, PictureBox1.Height, PictureBox1.Handle, 0)
-    ' ''If Not SendMessage(cWnd, WM_CAP_DRIVER_CONNECT, devId, Nothing) = IntPtr.Zero Then
-    ' ''    SendMessage(cWnd, WM_CAP_SET_SCALE, 1, Nothing)
-    ' ''    SendMessage(cWnd, WM_CAP_SET_PREVIEWRATE, 66, Nothing)
-    ' ''    SendMessage(cWnd, WM_CAP_SET_PREVIEW, 1, Nothing)
-    ' ''Else
-    ' ''    MessageBox.Show("Error connecting to capture device. Make sure your WebCam is connected and try again.")
-    ' ''    cWnd = IntPtr.Zero
-    ' ''    Me.Close()
-    ' ''End If
-
-    Private Sub Form1_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
-        gQuitSleep = True 'make sure sleep loop actually quits
-        'kill webcam
-        WebCamStopVideo()
-
-        If Not cWnd.Equals(IntPtr.Zero) Then
-            SendMessage(cWnd, WM_CAP_DRIVER_DISCONNECT, devId, Nothing)
-
-            DestroyWindow(cWnd)
-        End If
-        If System.IO.File.Exists(tmppic) Then System.IO.File.Delete(tmppic)
-    End Sub
-
-
-
-
-    Private Sub ComboBox2_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbCam1CamType.SelectedIndexChanged
-        If cmbCam1CamType.Text = "WebCam" Then
-            Try
-                VideoSourcePlayer1.Visible = True
-                VideoSourcePlayer1.Top = pctImageLiveImage.Top
-                VideoSourcePlayer1.Width = pctImageLiveImage.Width
-                VideoSourcePlayer1.Left = pctImageLiveImage.Left
-                VideoSourcePlayer1.Height = pctImageLiveImage.Height
-                pctImageLiveImage.Visible = False
-                lblWebCam1Info.Visible = True
-                '   lstWebCamSelect.Visible = True
-                EnumerateVideoDevices()
-                WebCamStartVideo()
-                pnlWebCamControls.Visible = True
-                pnlWebCamControls.Top = txtURL1.Top
-
-            Catch ex As Exception
-                Beep()
-                txtOutput.Text = (ex.Message)
-
-            End Try
-        Else
-            WebCamStopVideo()
-            lblWebCam1Info.Visible = False
-            ' lstWebCamSelect.Visible = False
-            pctImageLiveImage.Visible = True
-            VideoSourcePlayer1.Visible = False
-            pnlWebCamControls.Visible = False
-
-        End If
-        updateSettings()
-    End Sub
-
-    Private Function WebCamTakePicture()
-        Dim sFileName As String
-        Dim appPath As String = My.Application.Info.DirectoryPath
-        Try
-            '     VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(cmbVideoModes.SelectedIndex) 'VideoCaptureDevice(VideoDevices(cmbVideoSource.SelectedIndex).MonikerString).
-
-        Catch ex As Exception
-
-        End Try
-        Try
-
-            'Image type is hard coded for now as bmp
-
-
-
-            '[TB NOTE' This method currently works but you have to run the app as administrator due to some weird permissions 
-            '              issues with copying the temp file out of the appdata/Loca/Temp/ folder
-
-            If VideoSourcePlayer1.IsRunning = True Then
-                If My.Settings.ICType = "PNG" Then
-                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(rootTempFullSavePath(1), System.Drawing.Imaging.ImageFormat.Png)
-                ElseIf My.Settings.ICType = "JPG" Then
-                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(rootTempFullSavePath(1), System.Drawing.Imaging.ImageFormat.Jpeg)
-                Else
-                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(rootTempFullSavePath(1), System.Drawing.Imaging.ImageFormat.Bmp)
-                End If
-                'Load image to viewer
-                pctCam1LastImage.Image = LoadAndCloneImage(rootTempFullSavePath(1), tempIm) ' Load temp image for viewing and saving
-            End If
-        Catch ex As Exception
-            Beep()
-            txtOutput.Text = ("Capture Failed." & vbCrLf & ex.Message & vbCrLf & vbCrLf & "Try taking snapshot again when video image is visible." & vbCrLf & "Temp file save path: " & rootTempFullSavePath(1))
-
-        End Try
-
-
-    End Function
 
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
@@ -1452,9 +1792,7 @@ Public Class frmPhenoSnap
             pctCam1LastImage.Image.Save(fullSavePath(1))
         Catch ex As Exception
             Beep()
-
         End Try
-
     End Sub
 
     Private Sub txtCountDownTimeSecs_TextChanged(sender As Object, e As EventArgs) Handles txtCountDownTimeSecs.TextChanged
@@ -1471,256 +1809,40 @@ Public Class frmPhenoSnap
         End Try
     End Sub
 
-
-    Private WithEvents timer As New Timer
-    'Stores the file path, e.g.: "F:\Temp"
-    Friend Shared strICLocation As String = My.Settings.ICSet
-    'Stores the common name for the file, such as "Capture" (Screenshot, whatever you want)
-    Friend Shared strICFileRootName As String = My.Settings.ICRootName
-    'Stores the image format to save in a 3 char string: PNG, JPG, BMP
-    Friend Shared strICType As String = My.Settings.ICType
-
-    Dim VideoCaptureSource As VideoCaptureDevice
-    Dim VideoDevices As New FilterInfoCollection(FilterCategory.VideoInputDevice)
-    Private Property VideoCapabilities As VideoCapabilities()
-    Dim frame As System.Drawing.Bitmap
-    Dim filename As String
-
-    Private Sub Main_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
-        EnumerateVideoDevices()
-
-    End Sub
-
-    Private Sub EnumerateVideoDevices()
-        ' enumerate video devices
-        VideoDevices = New FilterInfoCollection(FilterCategory.VideoInputDevice)
-        Try
-            cmbVideoSource.Items.Clear()
-        Catch ex As Exception
-
-        End Try
-
-        If VideoDevices.Count <> 0 Then
-            ' add all devices to combo
-            For Each device As FilterInfo In VideoDevices
-                cmbVideoSource.Items.Add(device.Name)
-                cmbVideoSource.SelectedIndex = 0
-                VideoCaptureSource = New VideoCaptureDevice(VideoDevices(cmbVideoSource.SelectedIndex).MonikerString)
-                EnumerateVideoModes(VideoCaptureSource)
-            Next
-        Else
-            cmbVideoSource.Items.Add("No DirectShow devices found")
-        End If
-        cmbVideoSource.SelectedIndex = 0
-    End Sub
-
-    Private Sub EnumerateVideoModes(device As VideoCaptureDevice)
-        ' Exit Sub
-        ' get resolutions for selected video source
-        Me.Cursor = Cursors.WaitCursor
-        cmbVideoModes.Items.Clear()
-        Try
-            VideoCapabilities = device.VideoCapabilities
-            For i = 0 To VideoCapabilities.Count - 1
-                If Not cmbVideoModes.Items.Contains(VideoCapabilities(i).FrameSize) Then
-                    cmbVideoModes.Items.Add(VideoCapabilities(i).FrameSize)
-                End If
-            Next
-            If VideoCapabilities.Length = 0 Then
-                cmbVideoModes.Items.Add("Not supported")
-            End If
-            cmbVideoModes.SelectedIndex = 0
-        Finally
-            Me.Cursor = Cursors.[Default]
-
-
-
-        End Try
-    End Sub
-
-#Region "IC (Image Capture)"
-
-
-    Private Sub btnICSet_Click(sender As Object, e As EventArgs) Handles btnICSet.Click
-        'Make a button called btnICSet to set the save path
-        Dim dialog As New FolderBrowserDialog()
-        dialog.Description = "Select Image Capture save path"
-        If dialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
-            strICLocation = dialog.SelectedPath
-            lblICLocation.Text = strICLocation
-        End If
-    End Sub
-
-    Private Sub ICCapture_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles btnICCapture.Click
-        'Need a button called btnICCapture.  This is what will initiate the screen cap.
-        Dim strFilename As String = strICFileRootName & " " & Format(Now, "yyyy-MMM-dd HH.mm.ss.fff") & "." & My.Settings.ICType
-        Try
-            txtOutput.Text = strFilename
-            If VideoSourcePlayer1.IsRunning = True Then
-                If My.Settings.ICType = "PNG" Then
-                    filename = filename & ".png"
-                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(strFilename, System.Drawing.Imaging.ImageFormat.Png)
-                ElseIf My.Settings.ICType = "JPG" Then
-                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(strFilename, System.Drawing.Imaging.ImageFormat.Jpeg)
-                Else
-                    VideoSourcePlayer1.GetCurrentVideoFrame.Save(strFilename, System.Drawing.Imaging.ImageFormat.Bmp)
-                End If
-            End If
-        Catch ex As Exception
-            MessageBox.Show(strFilename & vbCrLf & "Try taking snapshot again when video image is visible.", "Cannot Save Image", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
-
-#End Region
-
-    Private Sub WebCamStartVideo()
-        Try
-
-            If cmbVideoSource.SelectedItem <> "No Video Devices" Then
-                If VideoSourcePlayer1.IsRunning = True Then
-                    VideoSourcePlayer1.SignalToStop()
-                    VideoSourcePlayer1.WaitForStop()
-                End If
-
-                VideoCaptureSource = New VideoCaptureDevice(VideoDevices(cmbVideoSource.SelectedIndex).MonikerString)
-                Try
-                    VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(cmbVideoModes.SelectedIndex)
-
-                    ' VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(18)
-                    '  Dim result1 As Boolean = VideoCaptureSource.SetCameraProperty(CameraControlProperty.Exposure, txtBrightness.Text, CameraControlFlags.Manual)
-                Catch ex As Exception
-                    Beep()
-                    txtOutput.Text = "Error loading webcam. Error message: " & ex.Message
-                End Try
-                Try
-                    ' VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(18) 'VideoCaptureDevice(VideoDevices(cmbVideoSource.SelectedIndex).MonikerString).
-                    ' Beep()
-                    '  VideoCaptureSource.VideoCapabilities(18).FrameSize()
-
-                Catch ex As Exception
-
-                End Try
-                VideoSourcePlayer1.VideoSource = VideoCaptureSource
-
-                VideoSourcePlayer1.Start()
-            End If
-        Catch ex As Exception
-            Beep()
-            txtOutput.Text = (ex.Message)
-        End Try
-
-    End Sub
-
-    Private Sub WebCamStopVideo()
-        VideoSourcePlayer1.SignalToStop()
-        VideoSourcePlayer1.WaitForStop()
-        VideoDevices = Nothing
-        VideoCaptureSource = Nothing
-    End Sub
-
-
     Private Sub cmbVideoModes_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbVideoModes.SelectedIndexChanged
-        If Not formLoaded Then Exit Sub
-        If VideoSourcePlayer1.IsRunning = True Then
-            Dim imSize() As String
-            Try
-                ' WebCamStopVideo()
-
-                If Not IsNothing(VideoCaptureSource) Then
-                    '                    VideoCaptureSource.VideoResolution = VideoCaptureSource.VideoCapabilities(cmbVideoModes.SelectedIndex)
-                    WebCamStartVideo()
-                    imSize = Split(Replace(cmbVideoModes.Text, " ", ""), ",")
-
-                    camAspectRatio = GetCamAspectRatio(CInt(imSize(0)), CInt(imSize(1)))
-                    Try
-                        If IsNumeric(camAspectRatio) Then
-                            ' If camAspectRatio > 0 Then VideoSourcePlayer1.Height = VideoSourcePlayer1.Width / camAspectRatio
-                        End If
-
-                    Catch ex As Exception
-
-                    End Try
-                End If
-            Catch ex As Exception
-                Beep()
-
-            End Try
-            '  VideoCaptureDevice()
+        If formLoaded Then
+            SetWebcamResolution()
         End If
+
     End Sub
-    Private Function GetCamAspectRatio(width, height) As Double
-        Dim camAspectRatio As Long = Math.Round((width / height) * 10)
-        Select Case camAspectRatio
-            Case Is = 43
-                Return FOURTHREE
-            Case 13
-                Return THREETWO
-            Case 18
-                Return SIXTEENNINE
 
-            Case 1
-                Return 1
-        End Select
-
-
-    End Function
     Private Sub cmbVideoSource_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbVideoSource.SelectedIndexChanged
-        If Not formLoaded Then Exit Sub 'Prevent endless loop as combo box is populated
+        If formLoaded Then  'Prevent endless loop as combo box is populated
 
 
-        WebCamStartVideo()
-        EnumerateVideoModes(VideoCaptureSource)
-        WebCamStartVideo()
-        'SetFocusRange()
-        ' updateSettings()
+            WebCamStartVideo()
+            EnumerateVideoModes(VideoCaptureSource)
+            WebCamStartVideo()
+        End If
+
+
     End Sub
 
     Private Sub btnReloadWebcam_Click(sender As Object, e As EventArgs) Handles btnReloadWebcam.Click
         EnumerateVideoDevices()
     End Sub
 
-    Private Sub btnTest_Click(sender As Object, e As EventArgs) Handles btnTest.Click
-        SetFocusRange()
-
-    End Sub
-    Private Sub SetFocusRange()
-        Dim min As Integer = 0
-        Dim max As Integer = 0
-        Dim current As Integer = 0
-        '  Dim result2 As Boolean = VideoCaptureSource.SetCameraProperty(CameraControlProperty.Focus, txtBrightness.Text, CameraControlFlags.Manual)
-        Dim result3 As Boolean = VideoCaptureSource.GetCameraPropertyRange(CameraControlProperty.Focus, min, max, 1, 255, CameraControlFlags.Manual)
-        trkFocus.Minimum = min
-        trkFocus.Maximum = max
-        If gCamFocus > 0 And gCamFocus <= max Then
-            trkFocus.Value = gCamFocus
-        End If
-
-    End Sub
-
-    Private Sub trkBrightness_Scroll(sender As Object, e As EventArgs) Handles trkFocus.Scroll
-        Dim min As Integer = 0
-        Dim max As Integer = 0
-        Dim current As Integer = 0
-        '  Dim result2 As Boolean = VideoCaptureSource.SetCameraProperty(CameraControlProperty.Focus, txtBrightness.Text, CameraControlFlags.Manual)
-        Dim result3 As Boolean = VideoCaptureSource.GetCameraPropertyRange(CameraControlProperty.Focus, min, max, 1, 100, CameraControlFlags.Manual)
-        Try
-            Dim result2 As Boolean = VideoCaptureSource.SetCameraProperty(CameraControlProperty.Focus, trkFocus.Value, CameraControlFlags.Manual)
-            txtOutput.Text = min & "|" & max & "|" & current
-            lblFocus.Text = trkFocus.Value
-        Catch ex As Exception
-
-        End Try
-
-
-    End Sub
 
     Private Sub btnSetSize_Click(sender As Object, e As EventArgs)
-        WebCamStartVideo()
+        If formLoaded Then
+            WebCamStartVideo()
+        End If
 
     End Sub
 
     Private Sub pctCam1LastImage_Click(sender As Object, e As EventArgs) Handles pctCam1LastImage.Click
         Try
+            GoToScanBox()
             Process.Start(rootTempFullSavePath(1))
 
         Catch ex As Exception
@@ -1729,25 +1851,35 @@ Public Class frmPhenoSnap
         End Try
     End Sub
 
-    Private Sub tmrSetVideoSize_Tick(sender As Object, e As EventArgs) Handles tmrSetVideoSize.Tick
-        '     WaitForChangedResult for the webcam to load and then try to set the video size 
-        Application.DoEvents()
+    Private Sub txtCurLeafNum_TextChanged(sender As Object, e As EventArgs) Handles txtCurLeafNum.TextChanged
         Try
-            If cmbCam1CamType.Text = "WebCam" Then
-                If VideoSourcePlayer1.VideoSource.IsRunning Then
-                    Dim vidSizeIndex = cmbVideoModes.FindStringExact(gWebCamVideoSize)
-                    If vidSizeIndex > 0 Then cmbVideoModes.SelectedIndex = vidSizeIndex
-                    tmrSetVideoSize.Enabled = False
-                Else
-                    gSetSizeTimer = gSetSizeTimer + 1
-                End If
+            If IsNumeric(txtCurLeafNum.Text) Then
+                curLeafNum = txtCurLeafNum.Text
             End If
-
-            If gSetSizeTimer > 10 Then Exit Sub 'Quit after five seconds of trying
-
         Catch ex As Exception
-            tmrSetVideoSize.Enabled = False
-        End Try
+            Beep()
+            MsgBox("Make sure ""curleafnum"" box only has a number in it.", vbOKOnly)
+            Me.txtCurLeafNum.Focus()
 
+        End Try
+    End Sub
+
+    Private Sub chkMultiLeaf_CheckedChanged(sender As Object, e As EventArgs) Handles chkMultiLeaf.CheckedChanged
+        If chkMultiLeaf.Checked = True Then
+            txtCurLeafNum.Visible = True
+            lblCurleafnum.Visible = True
+        Else
+            txtCurLeafNum.Visible = False
+            lblCurleafnum.Visible = False
+        End If
+    End Sub
+
+
+#End Region
+
+
+
+    Private Sub btnStartVideo_Click(sender As Object, e As EventArgs)
+        WebCamStartVideo()
     End Sub
 End Class
